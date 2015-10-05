@@ -3,7 +3,9 @@
               [reagent.session :as session]
               [secretary.core :as secretary :include-macros true]
               [goog.events :as events]
-              [goog.history.EventType :as EventType])
+              [goog.history.EventType :as EventType]
+              [alpaca-traders.new-posting :as posting :refer [create]]
+     )
     (:import goog.History))
 
 ;; -------------------------
@@ -11,11 +13,8 @@
 
 (defn home-page []
   [:div [:h2 "Welcome to alpaca-traders"]
-   [:div [:a {:href "#/about"} "go to about page"]]])
-
-(defn about-page []
-  [:div [:h2 "About alpaca-traders"]
-   [:div [:a {:href "#/"} "go to the home page"]]])
+   [:div [:a {:href "#/about"} "go to about page"]]
+   [posting/create {}]])
 
 (defn current-page []
   [:div [(session/get :current-page)]])
@@ -26,9 +25,6 @@
 
 (secretary/defroute "/" []
   (session/put! :current-page #'home-page))
-
-(secretary/defroute "/about" []
-  (session/put! :current-page #'about-page))
 
 ;; -------------------------
 ;; History
