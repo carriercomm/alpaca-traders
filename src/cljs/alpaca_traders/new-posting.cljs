@@ -22,5 +22,5 @@
    [:input {:type "text"
             :placeholder "Silver"}]
    [:input {:type "text"
-            :placeholder "Bronze"}]
+            :placeholder "Copper"}]
    ])
