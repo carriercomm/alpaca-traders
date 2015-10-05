@@ -1,2 +1,0 @@
-# alpaca-traders
-alpaca traders
