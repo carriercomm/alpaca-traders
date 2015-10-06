@@ -85,4 +85,5 @@
                                              {:source-paths ["env/prod/cljs"]
                                               :compiler
                                               {:optimizations :advanced
+                                               :source-map true
                                                :pretty-print false}}}}}})
