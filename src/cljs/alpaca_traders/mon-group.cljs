@@ -13,9 +13,6 @@
                           :copper 1
                           })
 
-(defn rebalance [unbalanced-group]
-  (-> (:price unbalanced-group) to-coppers to-money-group)
-  )
 
 (defn money-amount-to-coppz [money-entry]
   (let [currency (first money-entry)
@@ -44,3 +41,7 @@
 (defn to-money-group [copper-amount]
   (let [k-order [:platinum :gold :silver :copper]]
     (reduce-to-money-group {:amount-left copper-amount, :keys-left k-order})))
+
+(defn rebalance [unbalanced-group]
+  (-> unbalanced-group to-coppers to-money-group)
+  )
