@@ -19,24 +19,21 @@
                                  }))
 
 
-(defn currency-input [param]
-  [:div [:label (:param placeholders)]
+(defn currency-input [input-group-type param]
+  (print param)
+  [:div [:label (param placeholders)]
    [:input {
              :type "number"
              :min "0"
-             :placeholder (:param placeholders)
-             :on-change #(swap! input-state assoc-in [:price param] (int (.-target.value %)))
-             :on-blur #(swap! input-state assoc :price (rebalance @input-state))
-             :value (get-in @input-state [:price param])
+             :placeholder (param placeholders)
+             :on-change #(swap! input-state assoc-in [input-group-type param] (int (.-target.value %)))
+             :on-blur #(swap! input-state assoc input-group-type (rebalance @input-state))
+             :value (get-in @input-state [input-group-type param])
              }]
    ])
 
 (defn input-group [input-group-type]
-  [:div [currency-input :platinum input-group-type]
-  [currency-input :gold "Gold"]
-  [currency-input :silver "Silver"]
-  [currency-input :copper "Copper"]
-  ])
+  [:div (map (partial currency-input input-group-type) (keys placeholders))])
 
 (defn create []
   [:div
