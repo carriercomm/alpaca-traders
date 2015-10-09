@@ -1,8 +1,8 @@
 (ns alpaca-traders.new-posting
-  (:require [reagent.core :as reagent :refer [atom]]
+  (:require [reagent.core :as r :refer [atom]]
    [alpaca-traders.money-group :as money-group :refer [to-coppers to-money-group rebalance placeholders]]))
 
-(def default-money-group {
+(defonce default-money-group {
                            :platinum 0
                            :gold 0
                            :silver 0
@@ -10,16 +10,14 @@
                            }
   )
 
-(def input-state (reagent/atom {:price default-money-group
+(def input-state (r/atom {:price default-money-group
                                 :price-per-unit default-money-group
                                 :quantity 1
                                 }))
 
 
 (defn currency-input [input-type param]
-  (print input-type param)
-  [:div {:key (str input-type param @input-state)}
-   [:label (param placeholders)]
+  [:div [:label (param placeholders)]
    [:input {
              :type "number"
              :min "0"
@@ -31,15 +29,29 @@
    ])
 
 (defn input-group [input-group-type]
-  [:div
-   [currency-input input-group-type :platinum]
+  [:div [currency-input input-group-type :platinum]
    [currency-input input-group-type :gold]
    [currency-input input-group-type :silver]
    [currency-input input-group-type :copper]
    ])
 
+(defn resolve-ppu []
+  (let [total-price (:price @input-state),
+        quantity (:quantity @input-state)]
+    (swap! input-state assoc :price-per-unit (to-money-group (/ (to-coppers total-price) quantity)))
+    )
+  )
+
+(defn resolve-total-price []
+  (let [ppu (:price-per-unit @input-state)
+        quantity (:quantity @input-state)]
+    (swap! input-state assoc :price (to-money-group (* (to-coppers ppu) quantity)))
+    )
+  )
+
 (defn create []
-  [:div [:h2 "State your price, dingus."]
+  [:div [:h2 "Price"]
+   [input-group :price]
    [:label "I want to sell"]
    [:input {
              :type "number"
@@ -47,7 +59,6 @@
              :on-change #(swap! input-state assoc :quantity (int (.-target.value %)))
              :value (:quantity @input-state)}]
 
-   [input-group :price]
 
    [:h2 "Price Per Unit"]
    [input-group :price-per-unit]
