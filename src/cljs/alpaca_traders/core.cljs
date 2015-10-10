@@ -12,8 +12,7 @@
 ;; Views
 
 (defn home-page []
-  [:div [:h2 "Welcome to alpaca-traders"]
-   [:div [:a {:href "#/about"} "go to about page"]]
+  [:div [:h1 "Alpaca Traders"]
    [posting/create {}]])
 
 (defn current-page []

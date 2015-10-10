@@ -1,11 +1,12 @@
 (ns alpaca-traders.money-group)
 
-(def placeholders {
+(defonce placeholders {
                     :platinum "Platinum"
                      :gold "Gold"
                      :silver "Silver"
                      :copper "Copper"
                     })
+
 (def currency-to-copper {
                           :platinum 10000
                           :gold 1000

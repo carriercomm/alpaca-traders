@@ -34,3 +34,18 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+div.currency-row {
+  width: 13em;
+  position: relative;
+}
+
+label.currency-label {
+  width: 8em;
+  float: left;
+}
+
+.currency {
+  float: right;
+  width: 5em;
+}

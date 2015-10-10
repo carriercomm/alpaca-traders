@@ -11,32 +11,33 @@
   )
 
 (def input-state (r/atom {:price default-money-group
-                                :price-per-unit default-money-group
                                 :quantity 1
                                 }))
 
 
-(defn currency-input [input-type param]
-  [:div [:label (param placeholders)]
-   [:input {
+(defn currency-input [param]
+  [:div.currency-row 
+   [:label.currency-label (param placeholders)]
+   [:input.currency {
              :type "number"
              :min "0"
              :placeholder (param placeholders)
-             :on-change #(swap! input-state assoc-in [input-type param] (int (.-target.value %)))
-             :on-blur #(swap! input-state assoc input-type (rebalance (input-type @input-state)))
-             :value (get-in @input-state [input-type param])
+             :on-change #(swap! input-state assoc-in [:price param] (int (.-target.value %)))
+             :on-blur #(swap! input-state assoc :price (rebalance (:price @input-state)))
+             :value (get-in @input-state [:price param])
              }]
    ])
 
-(defn input-group [input-group-type]
-  [:div [currency-input input-group-type :platinum]
-   [currency-input input-group-type :gold]
-   [currency-input input-group-type :silver]
-   [currency-input input-group-type :copper]
+(defn input-group [on-change]
+  [:div 
+   [currency-input :platinum]
+   [currency-input :gold]
+   [currency-input :silver]
+   [currency-input :copper]
    ])
 
 (defn resolve-ppu []
-  (let [total-price (:price @input-state),
+  (let [total-price (:price @input-state)
         quantity (:quantity @input-state)]
     (swap! input-state assoc :price-per-unit (to-money-group (/ (to-coppers total-price) quantity)))
     )
@@ -51,7 +52,7 @@
 
 (defn create []
   [:div [:h2 "Price"]
-   [input-group :price]
+   [input-group #()]
    [:label "I want to sell"]
    [:input {
              :type "number"
@@ -61,5 +62,5 @@
 
 
    [:h2 "Price Per Unit"]
-   [input-group :price-per-unit]
+   [input-group #()]
    ])
