@@ -1,6 +1,7 @@
 (ns alpaca-traders.new-posting
   (:require [reagent.core :as r :refer [atom]]
-            [alpaca-traders.money-group :as money-group :refer [to-coppers to-money-group rebalance placeholders]]))
+            [alpaca-traders.money-group :as money-group :refer [to-coppers to-money-group rebalance placeholders]]
+            [cljs.test :refer-macros [deftest is testing run-tests]]))
 
 (defonce default-money-group {
                               :platinum 0
@@ -44,6 +45,33 @@
     )
   )
 
+(defn calculate-total [ppu quantity]
+  (-> ppu to-coppers (* quantity) to-money-group)
+  )                   
+
+(defn calculate-ppu [total-price quantity]
+  (-> total-price to-coppers (/ quantity) to-money-group)
+  )   
+
+(deftest test-calculate-total
+  (let [money-group (assoc default-money-group :gold 4)
+        quantity 2
+        ppu (calculate-ppu money-group quantity)
+        ]
+    (is (= (:gold ppu) 2))
+    )
+  )
+
+(deftest test-calculate-total-failure
+  (let [money-group (assoc default-money-group :gold 4)
+        quantity 2
+        ppu (calculate-ppu money-group quantity)
+        ]
+    (is (= (:gold ppu) 4))
+    )
+  )
+
+
 (defn resolve-total-price []
   (let [ppu (:price-per-unit @input-state)
         quantity (:quantity @input-state)]
@@ -52,11 +80,13 @@
   )
 
 (defn pricing-input [value]
+  "value -> str"
   (let [pricing (:pricing @input-state)
         checked (if (= value pricing) 
                   "checked" 
                   "" )]
     [:input {
+             :key (str value checked)
              :type "radio"
              :name "Pricing"
              :value value
@@ -82,13 +112,17 @@
        [:div [:h2 "Price"]
         [input-group #()]
         ]
-        
-        [:div
-         [:h2 "Price Per Unit"]
-         [input-group #()]
-         ]
-        )
+       
+       [:div
+        [:h2 "Price Per Unit"]
+        [input-group #()]
+        ]
+       )
      [:label "I want to sell"]
      [quantity-input]
      [:div (doall (map pricing-input ["Total" "PPU"]))]
-     ]))
+     ]
+    )
+  )
+
+(run-tests)

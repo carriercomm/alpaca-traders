@@ -1,0 +1,25 @@
+2015-10-09T00:42:33.578791000 0.433113s notice: Recursively removing directory /Users/palme/workspace/alpaca-traders/rethinkdb_data/tmp
+2015-10-09T00:42:33.581100000 0.435431s notice: Initializing directory /Users/palme/workspace/alpaca-traders/rethinkdb_data
+2015-10-09T00:42:33.581197000 0.435518s info: Creating a default database for your convenience. (This is because you ran 'rethinkdb' without 'create', 'serve', or '--join', and the directory '/Users/palme/workspace/alpaca-traders/rethinkdb_data' did not already exist or is empty.)
+2015-10-09T00:42:33.581994000 0.436316s notice: Running rethinkdb 2.1.5-2 (CLANG 7.0.0 (clang-700.0.72))...
+2015-10-09T00:42:33.585033000 0.439354s notice: Running on Darwin 14.5.0 x86_64
+2015-10-09T00:42:33.585065000 0.439385s notice: Loading data from directory /Users/palme/workspace/alpaca-traders/rethinkdb_data
+2015-10-09T00:42:33.697109000 0.551430s info: Automatically using cache size of 3034 MB
+2015-10-09T00:42:33.697450000 0.551771s notice: Listening for intracluster connections on port 29015
+2015-10-09T00:42:33.701569000 0.555889s notice: Listening for client driver connections on port 28015
+2015-10-09T00:42:33.701686000 0.556006s notice: Listening for administrative HTTP connections on port 8080
+2015-10-09T00:42:33.701692000 0.556012s notice: Listening on addresses: 127.0.0.1, ::1
+2015-10-09T00:42:33.701693000 0.556013s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2015-10-09T00:42:33.701695000 0.556015s notice: Server ready, "Chriss_MBP_wyz" 09692517-47ca-4140-a959-d696bc2261c7
+2015-10-09T00:43:49.353582000 76.201688s info: Table 70a5b62a-03b6-4534-8aa5-30a1feb6de10: Added replica on this server.
+2015-10-09T00:43:50.711118000 77.559138s info: Table 70a5b62a-03b6-4534-8aa5-30a1feb6de10: Starting a new Raft election for term 1.
+2015-10-09T00:43:50.733068000 77.581048s info: Table 70a5b62a-03b6-4534-8aa5-30a1feb6de10: This server is Raft leader for term 1. Latest log index is 0.
+2015-10-09T00:47:35.182194000 302.011656s info: Table 1a9a0611-7ad7-44a4-b39c-7e3bdf9bbbc2: Added replica on this server.
+2015-10-09T00:47:36.616333000 303.445623s info: Table 1a9a0611-7ad7-44a4-b39c-7e3bdf9bbbc2: Starting a new Raft election for term 1.
+2015-10-09T00:47:36.640079000 303.469369s info: Table 1a9a0611-7ad7-44a4-b39c-7e3bdf9bbbc2: This server is Raft leader for term 1. Latest log index is 0.
+2015-10-09T00:50:47.714469000 494.528050s info: Table 1a9a0611-7ad7-44a4-b39c-7e3bdf9bbbc2: Configuration is changing.
+2015-10-10T11:13:15.572568000 4870.371219s notice: Server got SIGINT from pid 458, uid 501; shutting down...
+2015-10-10T11:13:15.572686000 4870.371331s notice: Shutting down client connections...
+2015-10-10T11:13:15.574121000 4870.372767s notice: All client connections closed.
+2015-10-10T11:13:15.574132000 4870.372777s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
+2015-10-10T11:13:15.582040000 4870.380685s notice: Storage engine shut down.
