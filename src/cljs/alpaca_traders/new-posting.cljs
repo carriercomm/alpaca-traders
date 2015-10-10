@@ -1,31 +1,32 @@
 (ns alpaca-traders.new-posting
   (:require [reagent.core :as r :refer [atom]]
-   [alpaca-traders.money-group :as money-group :refer [to-coppers to-money-group rebalance placeholders]]))
+            [alpaca-traders.money-group :as money-group :refer [to-coppers to-money-group rebalance placeholders]]))
 
 (defonce default-money-group {
-                           :platinum 0
-                           :gold 0
-                           :silver 0
-                           :copper 0
-                           }
+                              :platinum 0
+                              :gold 0
+                              :silver 0
+                              :copper 0
+                              }
   )
 
 (def input-state (r/atom {:price default-money-group
-                                :quantity 1
-                                }))
+                          :quantity 1
+                          :pricing "Total"
+                          }))
 
 
 (defn currency-input [param]
   [:div.currency-row 
    [:label.currency-label (param placeholders)]
    [:input.currency {
-             :type "number"
-             :min "0"
-             :placeholder (param placeholders)
-             :on-change #(swap! input-state assoc-in [:price param] (int (.-target.value %)))
-             :on-blur #(swap! input-state assoc :price (rebalance (:price @input-state)))
-             :value (get-in @input-state [:price param])
-             }]
+                     :type "number"
+                     :min "0"
+                     :placeholder (param placeholders)
+                     :on-change #(swap! input-state assoc-in [:price param] (int (.-target.value %)))
+                     :on-blur #(swap! input-state assoc :price (rebalance (:price @input-state)))
+                     :value (get-in @input-state [:price param])
+                     }]
    ])
 
 (defn input-group [on-change]
@@ -50,17 +51,44 @@
     )
   )
 
+(defn pricing-input [value]
+  (let [pricing (:pricing @input-state)
+        checked (if (= value pricing) 
+                  "checked" 
+                  "" )]
+    [:input {
+             :type "radio"
+             :name "Pricing"
+             :value value
+             :checked checked
+             :on-change #(swap! input-state assoc :pricing (.-target.value %))
+             }
+     value]
+    ))
+
+(defn quantity-input []
+  [:input {
+           :type "number"
+           :min "1"
+           :on-change #(swap! input-state assoc :quantity (int (.-target.value %)))
+           :value (:quantity @input-state)}] 
+  )
+
 (defn create []
-  [:div [:h2 "Price"]
-   [input-group #()]
-   [:label "I want to sell"]
-   [:input {
-             :type "number"
-             :min "1"
-             :on-change #(swap! input-state assoc :quantity (int (.-target.value %)))
-             :value (:quantity @input-state)}]
-
-
-   [:h2 "Price Per Unit"]
-   [input-group #()]
-   ])
+  (let [pricing (:pricing @input-state)]
+    
+    [:div 
+     (if (= pricing "Total")
+       [:div [:h2 "Price"]
+        [input-group #()]
+        ]
+        
+        [:div
+         [:h2 "Price Per Unit"]
+         [input-group #()]
+         ]
+        )
+     [:label "I want to sell"]
+     [quantity-input]
+     [:div (doall (map pricing-input ["Total" "PPU"]))]
+     ]))
