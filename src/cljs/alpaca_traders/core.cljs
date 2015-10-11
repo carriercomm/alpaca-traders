@@ -1,19 +1,20 @@
 (ns alpaca-traders.core
-    (:require [reagent.core :as reagent :refer [atom]]
-              [reagent.session :as session]
-              [secretary.core :as secretary :include-macros true]
-              [goog.events :as events]
-              [goog.history.EventType :as EventType]
-              [alpaca-traders.new-posting :as posting :refer [create]]
-     )
-    (:import goog.History))
+  (:require [reagent.core :as reagent :refer [atom]]
+            [reagent.session :as session]
+            [secretary.core :as secretary :include-macros true]
+            [goog.events :as events]
+            [goog.history.EventType :as EventType]
+            [alpaca-traders.new-posting :as posting :refer [create]]
+            [alpaca-traders.nav-bar :as nav-bar :refer [create]])
+  (:import goog.History)
+  )
 
 (enable-console-print!)
 ;; -------------------------
 ;; Views
 
 (defn home-page []
-  [:div [:h1 "Alpaca Traders"]
+  [:div
    [posting/create {}]])
 
 (defn current-page []
@@ -24,7 +25,7 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (session/put! :current-page #'home-page))
+                    (session/put! :current-page #'home-page))
 
 ;; -------------------------
 ;; History
@@ -32,15 +33,19 @@
 (defn hook-browser-navigation! []
   (doto (History.)
     (events/listen
-     EventType/NAVIGATE
-     (fn [event]
-       (secretary/dispatch! (.-token event))))
+      EventType/NAVIGATE
+      (fn [event]
+        (secretary/dispatch! (.-token event))))
     (.setEnabled true)))
 
 ;; -------------------------
 ;; Initialize app
 (defn mount-root []
-  (reagent/render [current-page] (.getElementById js/document "app")))
+  (reagent/render [:div 
+                   [nav-bar/create] 
+                   [current-page]
+                   ]
+                  (.getElementById js/document "app")))
 
 (defn init! []
   (hook-browser-navigation!)
