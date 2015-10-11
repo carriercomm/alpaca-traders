@@ -8,6 +8,7 @@
      )
     (:import goog.History))
 
+(enable-console-print!)
 ;; -------------------------
 ;; Views
 

@@ -40,12 +40,10 @@ div.currency-row {
 }
 
 label.currency-label {
-  float: left;
   display: none;
 }
 
 .currency {
-  float: right;
   width: 5em;
 }
 
@@ -70,4 +68,30 @@ input[type=number] {
 h2.ppu-title {
   display: inline-block;
   padding-right: .5em;
+}
+
+.platinum, .gold, .silver, .copper {
+  border-radius: 50%;
+  width: 1em;
+  box-sizing: unset;
+  height: 1em;
+  margin: .25em;
+  border: 2px solid black;
+  float: right;
+}
+
+.platinum {
+  background-color: white;
+}
+
+.gold {
+  background-color: gold;
+}
+
+.silver {
+  background-color: silver;
+}
+
+.copper {
+  background-color: #B87333;
 }

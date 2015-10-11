@@ -1,19 +1,20 @@
 (ns alpaca-traders.money-group
-  (:require [cljs.test :refer-macros [deftest is testing run-tests]]))
+  (:require [clojure.string :as string] 
+            [cljs.test :refer-macros [deftest is testing run-tests]]))
 
 (defonce names {
-                       :platinum "Platinum"
-                       :gold "Gold"
-                       :silver "Silver"
-                       :copper "Copper"
-                       })
+                :platinum "Platinum"
+                :gold "Gold"
+                :silver "Silver"
+                :copper "Copper"
+                })
 
 (def default-group {
-                        :platinum 0
-                        :gold 2
-                        :silver 1
-                        :copper 0
-                        }
+                    :platinum 0
+                    :gold 0
+                    :silver 0
+                    :copper 0
+                    }
   )
 
 (def currency-to-copper {
@@ -24,8 +25,7 @@
                          })
 
 (defn money-amount-to-coppz [money-entry]
-  (let [currency (first money-entry)
-        amount (second money-entry)]
+  (let [[currency amount] money-entry]
     (* (currency currency-to-copper) amount))
   )
 
@@ -34,34 +34,55 @@
   )
 
 (defn- reduce-to-group [m]
-  (let [keys-left (:keys-left m)
-        current-key (first keys-left)
+  (let [[current-key & keys-left] (:keys-left m)
         copper-left (:amount-left m)
         conversion-rate (get currency-to-copper current-key)]
-    (if (= current-key nil)
+    (if (nil? current-key)
       (dissoc m :keys-left :amount-left)
       (reduce-to-group
         (assoc m current-key (int (/ copper-left conversion-rate))
-          :keys-left (rest keys-left)
+          :keys-left keys-left
           :amount-left (rem copper-left conversion-rate))))))
 
 (defn to-group [copper-amount]
   (let [k-order [:platinum :gold :silver :copper]]
-    (reduce-to-group {:amount-left copper-amount, :keys-left k-order}))
+    (reduce-to-group {
+                      :amount-left copper-amount 
+                      :keys-left k-order}))
   )
 
 (defn to-total [ppu-with-quantity]
-  (let [ppu (:price ppu-with-quantity)
-        quantity (:quantity ppu-with-quantity)]
+  (let [{ppu :price 
+         quantity :quantity} ppu-with-quantity]
     (-> ppu to-coppers (* quantity) to-group)
     )                   
   )
 
 (defn to-ppu [price-with-quantity]
-  (let [price (:price price-with-quantity)
-        quantity (:quantity price-with-quantity)]
+  (let [{price :price
+         quantity :quantity} price-with-quantity]
     (-> price to-coppers (/ quantity) to-group)
     )   
+  )
+
+(defn value? [currency]
+  (let [[_ v] currency]
+    (pos? v)
+    )
+  )
+
+(defn currency-pair-string [currency] 
+  (let [[k v] currency
+        key-name (name k)
+        amount (.toLocaleString v)]
+    (str amount " " key-name))
+  )
+
+(defn to-string [m]
+  (let [with-value (filter value? m)
+        values (map currency-pair-string with-value)]
+    (string/join ", " values)
+    )
   )
 
 (defn rebalance [unbalanced-group]

@@ -12,11 +12,6 @@
   
   )
 
-(deftest test-handler-ppu
-  (let [start-state (assoc @input-state :use-ppu true)
-        end-state (change-handler start-state)]
-    )  )
-
 (defn currency-input [param]
   (let [placeholder (param money/names)]
     [:div.currency-row {:key (str param)}
@@ -29,6 +24,7 @@
                        :on-blur #(swap! input-state assoc :price (money/rebalance (:price @input-state)))
                        :value (get-in @input-state [:price param])
                        }]
+     [:div {:class (str (name param))}]
      ]
     )
   )
@@ -40,16 +36,16 @@
    (doall (map currency-input [:platinum :gold :silver :copper]))
    ])
 
-(defn resolve-ppu []
-  (let [total-price (:price @input-state)
-        quantity (:quantity @input-state)]
+(defn resolve-ppu! []
+  (let [{total-price :price
+        quantity :quantity} @input-state]
     (swap! input-state assoc :price-per-unit (money/to-group (/ (money/to-coppers total-price) quantity)))
     )
   )
 
-(defn resolve-total-price []
-  (let [ppu (:price-per-unit @input-state)
-        quantity (:quantity @input-state)]
+(defn resolve-total-price! []
+  (let [{ppu :price-per-unit
+        quantity :quantity} @input-state]
     (swap! input-state assoc :price (money/to-group (* (money/to-coppers ppu) quantity)))
     )
   )
@@ -67,15 +63,18 @@
     ))
 
 (defn quantity-input []
-  [:div.quantity
-  [:input.quantity.off {
-           :type "number"
-           :id "quantity"
-           :min "1"
-           :on-change #(swap! input-state assoc :quantity (int (.-target.value %)))
-           :value (:quantity @input-state) }] 
-  [:label {:for "quantity"} "units"]
-  ]
+  (let [quantity (:quantity @input-state)
+        plural (if (= 1 quantity) "" "s")]
+    [:div.quantity
+     [:input.quantity.off {
+                           :type "number"
+                           :id "quantity"
+                           :min "1"
+                           :on-change #(swap! input-state assoc :quantity (int (.-target.value %)))
+                           :value (:quantity @input-state) }] 
+     [:label {:for "quantity"} "unit" plural]
+     ]
+    )
   )
 
 (defn create []
@@ -89,11 +88,17 @@
       [input-group]
       [quantity-input]
       ]
-
+     
      (if (ppu?)
-       [:p (str (money/to-ppu @input-state)) "PPU"]
-       [:p (str (money/to-total @input-state)) "Total"]
+       [:p  "Total " (-> @input-state money/to-total money/to-string)]
+       [:p "Cost per unit "(-> @input-state money/to-ppu money/to-string) ]
        )   
      ]
     )
   )
+
+(deftest test-handler-ppu
+  (let [start-state (assoc @input-state :use-ppu true)
+        end-state (change-handler start-state)]
+    )  )
+
