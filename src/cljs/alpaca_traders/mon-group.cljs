@@ -1,17 +1,17 @@
 (ns alpaca-traders.money-group
   (:require [cljs.test :refer-macros [deftest is testing run-tests]]))
 
-(defonce placeholders {
+(defonce names {
                        :platinum "Platinum"
                        :gold "Gold"
                        :silver "Silver"
                        :copper "Copper"
                        })
 
-(defonce default-group {
+(def default-group {
                         :platinum 0
-                        :gold 0
-                        :silver 0
+                        :gold 2
+                        :silver 1
                         :copper 0
                         }
   )
@@ -50,40 +50,49 @@
     (reduce-to-group {:amount-left copper-amount, :keys-left k-order}))
   )
 
-(defn calculate-total [ppu quantity]
-  (-> ppu to-coppers (* quantity) to-group)
-  )                   
+(defn to-total [ppu-with-quantity]
+  (let [ppu (:price ppu-with-quantity)
+        quantity (:quantity ppu-with-quantity)]
+    (-> ppu to-coppers (* quantity) to-group)
+    )                   
+  )
 
-(defn calculate-ppu [total-price quantity]
-  (-> total-price to-coppers (/ quantity) to-group)
-  )   
+(defn to-ppu [price-with-quantity]
+  (let [price (:price price-with-quantity)
+        quantity (:quantity price-with-quantity)]
+    (-> price to-coppers (/ quantity) to-group)
+    )   
+  )
 
 (defn rebalance [unbalanced-group]
   (-> unbalanced-group to-coppers to-group)
   )
 
 ;; Le tests
-(deftest test-calculate-total
+(deftest test-to-total 
   (let [money-group (assoc default-group :gold 4)
         quantity 2
-        total (calculate-total money-group quantity)
+        m {:price money-group :quantity quantity}
+        total (to-total m)
         ]
     (is (= (:gold total) 8)) )
   )
 
-(deftest test-calculate-ppu-rounds
+(deftest test-to-ppu-rounds
   (let [money-group (assoc default-group :copper 3)
         quantity 2
-        ppu (calculate-ppu money-group quantity)
+        state {:price money-group :quantity quantity}
+        ppu (to-ppu state)
         ]
     (is (= (:copper ppu) 1))
     )
   )
 
-(deftest test-calculate-ppu 
+(deftest test-to-ppu 
   (let [money-group (assoc default-group :gold 4)
         quantity 2
-        ppu (calculate-ppu money-group quantity)
+        state {:price money-group :quantity quantity}
+        ppu (to-ppu state)
         ]
     (is (= (:gold ppu) 2))
     )

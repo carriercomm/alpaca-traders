@@ -36,15 +36,38 @@ a:hover {
 }
 
 div.currency-row {
-  width: 13em;
+  display: inline-block;
 }
 
 label.currency-label {
-  width: 8em;
   float: left;
+  display: none;
 }
 
 .currency {
   float: right;
   width: 5em;
+}
+
+.quantity.on {
+  border: 1px solid gray;
+}
+
+.quantity.off {
+  border: none;
+}
+
+.quantity label {
+  padding-left: .5em;
+  cursor: pointer;
+}
+
+input[type=number] {
+ -moz-appearance:textfield;
+ text-align: right;
+}
+
+h2.ppu-title {
+  display: inline-block;
+  padding-right: .5em;
 }

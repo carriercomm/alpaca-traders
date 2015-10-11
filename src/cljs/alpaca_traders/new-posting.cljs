@@ -1,99 +1,99 @@
 (ns alpaca-traders.new-posting
   (:require [reagent.core :as r :refer [atom]]
-            [alpaca-traders.money-group :as money-group :refer [to-coppers to-money-group rebalance placeholders]]
+            [alpaca-traders.money-group :as money]
             [cljs.test :refer-macros [deftest is testing run-tests]]))
 
-(defonce default-money-group {
-                              :platinum 0
-                              :gold 0
-                              :silver 0
-                              :copper 0
-                              }
-  )
-
-(def input-state (r/atom {:price default-money-group
+(def input-state (r/atom {:price money/default-group
                           :quantity 1
-                          :pricing "Total"
+                          :use-ppu false
                           }))
 
+(defn change-handler [input-state] 
+  
+  )
+
+(deftest test-handler-ppu
+  (let [start-state (assoc @input-state :use-ppu true)
+        end-state (change-handler start-state)]
+    )  )
 
 (defn currency-input [param]
-  [:div.currency-row 
-   [:label.currency-label (param placeholders)]
-   [:input.currency {
-                     :type "number"
-                     :min "0"
-                     :placeholder (param placeholders)
-                     :on-change #(swap! input-state assoc-in [:price param] (int (.-target.value %)))
-                     :on-blur #(swap! input-state assoc :price (rebalance (:price @input-state)))
-                     :value (get-in @input-state [:price param])
-                     }]
-   ])
+  (let [placeholder (param money/names)]
+    [:div.currency-row {:key (str param)}
+     [:label.currency-label placeholder]
+     [:input.currency {
+                       :type "number"
+                       :min "0"
+                       :placeholder placeholder 
+                       :on-change #(swap! input-state assoc-in [:price param] (int (.-target.value %)))
+                       :on-blur #(swap! input-state assoc :price (money/rebalance (:price @input-state)))
+                       :value (get-in @input-state [:price param])
+                       }]
+     ]
+    )
+  )
 
-(defn input-group [on-change]
+
+(defn input-group []
   [:div 
-   [currency-input :platinum]
-   [currency-input :gold]
-   [currency-input :silver]
-   [currency-input :copper]
+   ; Should be le map 
+   (doall (map currency-input [:platinum :gold :silver :copper]))
    ])
 
 (defn resolve-ppu []
   (let [total-price (:price @input-state)
         quantity (:quantity @input-state)]
-    (swap! input-state assoc :price-per-unit (to-money-group (/ (to-coppers total-price) quantity)))
+    (swap! input-state assoc :price-per-unit (money/to-group (/ (money/to-coppers total-price) quantity)))
     )
   )
 
 (defn resolve-total-price []
   (let [ppu (:price-per-unit @input-state)
         quantity (:quantity @input-state)]
-    (swap! input-state assoc :price (to-money-group (* (to-coppers ppu) quantity)))
+    (swap! input-state assoc :price (money/to-group (* (money/to-coppers ppu) quantity)))
     )
   )
 
-(defn pricing-input [value]
+(defn toggle-ppu [value]
   "value -> str"
-  (let [pricing (:pricing @input-state)
-        checked (if (= value pricing) 
-                  "checked" 
-                  "" )]
-    [:input {
-             :key (str value checked)
-             :type "radio"
-             :name "Pricing"
-             :value value
-             :checked checked
-             :on-change #(swap! input-state assoc :pricing (.-target.value %))
-             }
-     value]
+  (let [ppu? (:use-ppu @input-state)
+        name (if (true? ppu?) 
+               "Total Price?"
+               "Per Unit?")]
+    [:a {
+         :on-click #(swap! input-state assoc :use-ppu (not ppu?))
+         }
+     name]
     ))
 
 (defn quantity-input []
-  [:input {
+  [:div.quantity
+  [:input.quantity.off {
            :type "number"
+           :id "quantity"
            :min "1"
            :on-change #(swap! input-state assoc :quantity (int (.-target.value %)))
-           :value (:quantity @input-state)}] 
+           :value (:quantity @input-state) }] 
+  [:label {:for "quantity"} "units"]
+  ]
   )
 
 (defn create []
-  (let [pricing (:pricing @input-state) ]
+  (let [ppu? #(-> @input-state :use-ppu true?)
+        title (if (ppu?) "Price Per Unit" "Total Price")]
     
     [:div 
-     (if (= pricing "Total")
-       [:div [:h2 "Price"]
-        [input-group #()]
-        ]
-       
-       [:div
-        [:h2 "Price Per Unit"]
-        [input-group #()]
-        ]
-       )
-     [:label "I want to sell"]
-     [quantity-input]
-     [:div (doall (map pricing-input ["Total" "PPU"]))]
+     [:h2.ppu-title  title]
+     [toggle-ppu] 
+     [:div
+      [input-group]
+      [quantity-input]
+      ]
+
+     (if (ppu?)
+       [:p (str (money/to-ppu @input-state)) "PPU"]
+       [:p (str (money/to-total @input-state)) "Total"]
+       )   
      ]
-    )   
+    )
   )
