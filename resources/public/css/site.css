@@ -47,17 +47,19 @@ label.currency-label {
   width: 5em;
 }
 
-.quantity.on {
-  border: 1px solid gray;
-}
-
-.quantity.off {
-  border: none;
-}
+div .quantity {
+  margin-bottom: .4em;
+  margin-top: .4em;
+} 
 
 .quantity label {
-  padding-left: .5em;
+  padding-left: .3em;
   cursor: pointer;
+}
+
+.quantity input {
+  cursor: pointer;
+  width: 5em;
 }
 
 input[type=number] {

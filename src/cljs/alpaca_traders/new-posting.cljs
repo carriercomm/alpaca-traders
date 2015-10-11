@@ -32,9 +32,9 @@
 
 (defn input-group []
   [:div 
-   ; Should be le map 
    (doall (map currency-input [:platinum :gold :silver :copper]))
-   ])
+   ]
+  )
 
 (defn resolve-ppu! []
   (let [{total-price :price
@@ -82,7 +82,7 @@
         quantity (:quantity @input-state)
         title (if (ppu?) "Price Per Unit" "Total Price")
         total-copper (money/to-coppers (:price @input-state))
-        summary-display (if (and (not= quantity 1)
+        summary-display (if (and (> quantity 1)
                                  (pos? total-copper)) "" "none")]
     
     [:div 
