@@ -35,16 +35,18 @@
   (let [currency (str (name param))
         value (currency-value state param ppu?)]
     [:div.currency-row {:key (str param)}
-     [:label.currency-label currency]
      [:input.currency {
+                       :id currency
                        :type "number"
                        :min "0"
                        :on-change #(swap! state assoc-in [:price param] (int (.-target.value %)))
                        :on-blur #(swap! state assoc :price (money/rebalance (:price @input-state)))
                        :value value
                        }]
-     [:div {:class currency
-            :title currency}]
+     [:label.currency {
+              :for currency
+              :class currency
+              :title currency}]
      ]
     )
   )
@@ -91,7 +93,7 @@
      
      (if (ppu?)
        [:p {:style {:display summary-display}} 
-        "Total ➔ " (-> @state money/to-total money/to-string)]
+        "Total ➔ " (-> @state money/to-total money/to-string) " for " quantity " units."]
        [:p {:style {:display summary-display}}
         "Cost per unit ➔ "(-> @state money/to-ppu money/to-string) ]
        )

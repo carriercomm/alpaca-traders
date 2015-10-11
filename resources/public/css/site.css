@@ -39,12 +39,14 @@ div.currency-row {
   display: inline-block;
 }
 
-label.currency-label {
-  display: none;
-}
 
 .currency {
   width: 5em;
+}
+
+label.currency {
+  cursor: pointer;
+  margin-right: .8em;
 }
 
 div .quantity {
@@ -54,11 +56,9 @@ div .quantity {
 
 .quantity label {
   padding-left: .3em;
-  cursor: pointer;
 }
 
 .quantity input {
-  cursor: pointer;
   width: 5em;
 }
 
