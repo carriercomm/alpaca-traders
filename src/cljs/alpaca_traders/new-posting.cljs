@@ -79,7 +79,11 @@
 
 (defn create []
   (let [ppu? #(-> @input-state :use-ppu true?)
-        title (if (ppu?) "Price Per Unit" "Total Price")]
+        quantity (:quantity @input-state)
+        title (if (ppu?) "Price Per Unit" "Total Price")
+        total-copper (money/to-coppers (:price @input-state))
+        summary-display (if (and (not= quantity 1)
+                                 (pos? total-copper)) "" "none")]
     
     [:div 
      [:h2.ppu-title  title]
@@ -89,10 +93,12 @@
       [quantity-input]
       ]
      
-     (if (ppu?)
-       [:p  "Total " (-> @input-state money/to-total money/to-string)]
-       [:p "Cost per unit "(-> @input-state money/to-ppu money/to-string) ]
-       )   
+       (if (ppu?)
+         [:p {:style {:display summary-display}} 
+          "Total ➔ " (-> @input-state money/to-total money/to-string)]
+         [:p {:style {:display summary-display}}
+          "Cost per unit ➔ "(-> @input-state money/to-ppu money/to-string) ]
+         )
      ]
     )
   )
