@@ -2,13 +2,6 @@
   (:require [clojure.string :as string] 
             [cljs.test :refer-macros [deftest is testing run-tests]]))
 
-(defonce names {
-                :platinum "Platinum"
-                :gold "Gold"
-                :silver "Silver"
-                :copper "Copper"
-                })
-
 (def default-group {
                     :platinum 0
                     :gold 0
