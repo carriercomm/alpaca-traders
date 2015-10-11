@@ -21,8 +21,19 @@
     )
   )
 
+(defn currency-value [state param ppu?]
+  (let [{currency :price
+         quantity :quantity} @state]
+    (if (true? ppu?)
+      (-> currency param (/ quantity))
+      (-> currency param)
+      )
+    )
+  )
+
 (defn currency-input [state param ppu? quantity]
-  (let [currency (str (name param))]
+  (let [currency (str (name param))
+        value (currency-value state param ppu?)]
     [:div.currency-row {:key (str param)}
      [:label.currency-label currency]
      [:input.currency {
@@ -30,7 +41,7 @@
                        :min "0"
                        :on-change #(swap! state assoc-in [:price param] (int (.-target.value %)))
                        :on-blur #(swap! state assoc :price (money/rebalance (:price @input-state)))
-                       :value (get-in @state [:price param])
+                       :value value
                        }]
      [:div {:class currency
             :title currency}]
