@@ -8,11 +8,20 @@
                           :use-ppu false
                           }))
 
-(defn change-handler [input-state] 
-  
+(defn toggle-ppu [state]
+  "value -> str"
+  (let [ppu? (:use-ppu @state)
+        name (if (true? ppu?) 
+               "Total Price?"
+               "Per Unit?")]
+    [:a {
+         :on-click #(swap! state assoc :use-ppu (not ppu?))
+         }
+     name]
+    )
   )
 
-(defn currency-input [param]
+(defn currency-input [state param ppu? quantity]
   (let [placeholder (param money/names)]
     [:div.currency-row {:key (str param)}
      [:label.currency-label placeholder]
@@ -20,57 +29,32 @@
                        :type "number"
                        :min "0"
                        :placeholder placeholder 
-                       :on-change #(swap! input-state assoc-in [:price param] (int (.-target.value %)))
-                       :on-blur #(swap! input-state assoc :price (money/rebalance (:price @input-state)))
-                       :value (get-in @input-state [:price param])
+                       :on-change #(swap! state assoc-in [:price param] (int (.-target.value %)))
+                       :on-blur #(swap! state assoc :price (money/rebalance (:price @input-state)))
+                       :value (get-in @state [:price param])
                        }]
      [:div {:class (str (name param))}]
      ]
     )
   )
 
-
-(defn input-group []
-  [:div 
-   (doall (map currency-input [:platinum :gold :silver :copper]))
-   ]
-  )
-
-(defn resolve-ppu! []
-  (let [{total-price :price
-        quantity :quantity} @input-state]
-    (swap! input-state assoc :price-per-unit (money/to-group (/ (money/to-coppers total-price) quantity)))
+(defn input-group [state ppu? quantity]
+  (let [currency-keys [:platinum :gold :silver :copper]]
+    [:div 
+     (doall (map #(currency-input state % ppu? quantity) currency-keys))
+     ]
     )
   )
 
-(defn resolve-total-price! []
-  (let [{ppu :price-per-unit
-        quantity :quantity} @input-state]
-    (swap! input-state assoc :price (money/to-group (* (money/to-coppers ppu) quantity)))
-    )
-  )
-
-(defn toggle-ppu [value]
-  "value -> str"
-  (let [ppu? (:use-ppu @input-state)
-        name (if (true? ppu?) 
-               "Total Price?"
-               "Per Unit?")]
-    [:a {
-         :on-click #(swap! input-state assoc :use-ppu (not ppu?))
-         }
-     name]
-    ))
-
-(defn quantity-input []
-  (let [quantity (:quantity @input-state)
+(defn quantity-input [state]
+  (let [quantity (:quantity @state)
         plural (if (= 1 quantity) "" "s")]
     [:div.quantity
      [:input.quantity.off {
                            :type "number"
                            :id "quantity"
                            :min "1"
-                           :on-change #(swap! input-state assoc :quantity (int (.-target.value %)))
+                           :on-change #(swap! state assoc :quantity (int (.-target.value %)))
                            :value (:quantity @input-state) }] 
      [:label {:for "quantity"} "unit" plural]
      ]
@@ -78,33 +62,28 @@
   )
 
 (defn create []
-  (let [ppu? #(-> @input-state :use-ppu true?)
-        quantity (:quantity @input-state)
+  (let [state input-state
+        ppu? #(-> @state :use-ppu true?)
+        quantity (:quantity @state)
         title (if (ppu?) "Price Per Unit" "Total Price")
-        total-copper (money/to-coppers (:price @input-state))
+        total-copper (money/to-coppers (:price @state))
         summary-display (if (and (> quantity 1)
                                  (pos? total-copper)) "" "none")]
     
     [:div 
-     [:h2.ppu-title  title]
-     [toggle-ppu] 
+     [:h2.ppu-title title]
+     [toggle-ppu state] 
      [:div
-      [input-group]
-      [quantity-input]
+      [input-group state]
+      [quantity-input state]
       ]
      
-       (if (ppu?)
-         [:p {:style {:display summary-display}} 
-          "Total ➔ " (-> @input-state money/to-total money/to-string)]
-         [:p {:style {:display summary-display}}
-          "Cost per unit ➔ "(-> @input-state money/to-ppu money/to-string) ]
-         )
+     (if (ppu?)
+       [:p {:style {:display summary-display}} 
+        "Total ➔ " (-> @state money/to-total money/to-string)]
+       [:p {:style {:display summary-display}}
+        "Cost per unit ➔ "(-> @state money/to-ppu money/to-string) ]
+       )
      ]
     )
   )
-
-(deftest test-handler-ppu
-  (let [start-state (assoc @input-state :use-ppu true)
-        end-state (change-handler start-state)]
-    )  )
-
