@@ -1,14 +1,56 @@
 (ns alpaca-traders.new-posting
+  "Reagent component to create a new posting on alpaca-traders"
   (:require [reagent.core :as r :refer [atom]]
             [alpaca-traders.money-group :as money]
             [cljs.test :refer-macros [deftest is testing run-tests]]
             [ajax.core :refer [POST]])
              )
 
-(def input-state (r/atom {:price money/default-group
-                          :quantity 1
-                          :use-ppu false
-                          }))
+(def test-items [{:name "Choose an item" :id nil}
+                 {:name "Bone chips" :id 1}
+                 {:name "Duck chips" :id 2}
+                 ]
+  )
+
+(def test-servers [{:name "Choose a server" :id nil}
+                   {:name "Mal'Ganis" :id 1}
+                   {:name "Tyrael" :id 2}
+                   ]
+  )
+
+(defn item-to-option [item]
+  "Create an HTML Option. If value is nil, option is disabled. 
+  Defaults to disabled options."
+  (let [{value :id 
+         label :name} item]
+    [:option {:value value
+              :key value
+              :disabled (nil? value)
+              } label]
+    )
+  )
+
+(defn item-select [state items] 
+  (let [options  (map item-to-option items)]
+    [:select {
+               :on-change #(swap! state assoc :item-id (int (.-target.value %)))
+               :value (:item-id @state)
+              }
+     options
+     ]
+    )
+  )
+
+(defn server-select [state servers] 
+  (let [options  (map item-to-option servers)]
+    [:select {
+               :on-change #(swap! state assoc :server-id (int (.-target.value %)))
+               :value (:server-id @state)
+              }
+     options
+     ]
+    )
+  )
 
 (defn toggle-ppu [state]
   "value -> str"
@@ -42,7 +84,7 @@
                        :type "number"
                        :min "0"
                        :on-change #(swap! state assoc-in [:price param] (int (.-target.value %)))
-                       :on-blur #(swap! state assoc :price (money/rebalance (:price @input-state)))
+                       :on-blur #(swap! state assoc :price (money/rebalance (:price @state)))
                        :value value
                        }]
      [:label.currency {
@@ -70,39 +112,15 @@
                            :id "quantity"
                            :min "1"
                            :on-change #(swap! state assoc :quantity (int (.-target.value %)))
-                           :value (:quantity @input-state) }] 
+                           :value (:quantity @state) }] 
      [:label {:for "quantity"} "unit" plural]
-     ]
-    )
-  )
-
-(defn item-to-option [item]
-  (let [{value :id 
-         label :name} item]
-    [:option {:value value
-              :key value} label]
-    )
-  )
-
-(def items [{:name "Bone chips" :id "1"}
-               {:name "Duck chips" :id "2"}
-               ]
-  )
-
-(defn item-drop-select [state] 
-  (let [options  (map item-to-option items)]
-    [:select {
-              ;:on-change #(.log js/console (.-target.value %))
-               :on-change #(swap! state assoc :item (.-target.value %))
-              }
-     options
      ]
     )
   )
 
 (defn submit [state] 
   (let [request {:method :post
-                 :params @state
+                 :json @state
                  :response-format :json
                  }
         response (POST "/new-posting" request)]
@@ -110,26 +128,49 @@
   )
 )
 
+(defn valid? [state]
+  "Server and item must not be nil. 
+  Might want to check if they're natural numbers as well."
+  (let [{item :item-id
+         server :server-id} @state]
+    (and item server)
+    )
+  )
+
+(defn submit-button [state]
+  [:button.btn.btn-default {:type "button"
+                            :on-click (partial submit state)
+                            :disabled (not (valid? state))}
+   "Ready to submit?"]
+  )
+
+
+(def default-state (r/atom {:price money/default-group
+                          :quantity 1
+                          :use-ppu false
+                          :item-id nil
+                          :server-id nil
+                          }))
+
 (defn create []
-  (let [state input-state
+  (let [state default-state 
         ppu? #(-> @state :use-ppu true?)
         quantity (:quantity @state)
         title (if (ppu?) "Price Per Unit" "Total Price")
         total-copper (money/to-coppers (:price @state))
         summary-display (if (and (> quantity 1)
-                                 (pos? total-copper)) "" "none")]
+                                 (pos? total-copper)) "" "none")
+        items test-items
+        servers test-servers]
     
     [:div 
      [:h1.ppu-title title]
      [toggle-ppu state] 
      [:div
-      [item-drop-select state] 
-      [input-group state]
-      [quantity-input state]
-      [:button.btn.btn-default {:type "button"
-                                :on-click (partial submit state)}
-        "Ready to submit?"]
-
+      [item-select state items]
+      [server-select state test-servers]
+      
+      (doall (map #(% state) [input-group quantity-input submit-button]))
       ]
      
      (if (ppu?)
