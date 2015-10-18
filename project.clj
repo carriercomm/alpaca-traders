@@ -19,7 +19,8 @@
                  [secretary "1.2.3"]]
 
   :plugins [[lein-environ "1.0.1"]
-            [lein-asset-minifier "0.2.2"]]
+            [lein-asset-minifier "0.2.2"]
+            [lein-less "1.7.5"]]
 
   :ring {:handler alpaca-traders.handler/app
          :uberwar-name "alpaca-traders.war"}
@@ -35,7 +36,10 @@
                                     [:cljsbuild :builds :app :compiler :output-to]]
 
   :source-paths ["src/clj" "src/cljc"]
-
+  
+   :less {:source-paths ["resources/less"]
+         :target-path "resources/public/css"}
+  
   :minify-assets
   {:assets
     {"resources/public/css/site.min.css" "resources/public/css/site.css"}}
@@ -76,7 +80,7 @@
 }
 }}
 
-             :uberjar {:hooks [leiningen.cljsbuild minify-assets.plugin/hooks]
+             :uberjar {:hooks [leiningen.less leiningen.cljsbuild minify-assets.plugin/hooks]
                        :env {:production true}
                        :aot :all
                        :omit-source true
