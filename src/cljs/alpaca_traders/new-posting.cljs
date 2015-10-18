@@ -1,7 +1,9 @@
 (ns alpaca-traders.new-posting
   (:require [reagent.core :as r :refer [atom]]
             [alpaca-traders.money-group :as money]
-            [cljs.test :refer-macros [deftest is testing run-tests]]))
+            [cljs.test :refer-macros [deftest is testing run-tests]]
+            [ajax.core :refer [POST]])
+             )
 
 (def input-state (r/atom {:price money/default-group
                           :quantity 1
@@ -74,6 +76,40 @@
     )
   )
 
+(defn item-to-option [item]
+  (let [{value :id 
+         label :name} item]
+    [:option {:value value
+              :key value} label]
+    )
+  )
+
+(def items [{:name "Bone chips" :id "1"}
+               {:name "Duck chips" :id "2"}
+               ]
+  )
+
+(defn item-drop-select [state] 
+  (let [options  (map item-to-option items)]
+    [:select {
+              ;:on-change #(.log js/console (.-target.value %))
+               :on-change #(swap! state assoc :item (.-target.value %))
+              }
+     options
+     ]
+    )
+  )
+
+(defn submit [state] 
+  (let [request {:method :post
+                 :params @state
+                 :response-format :json
+                 }
+        response (POST "/new-posting" request)]
+    (.log js/console response)
+  )
+)
+
 (defn create []
   (let [state input-state
         ppu? #(-> @state :use-ppu true?)
@@ -84,11 +120,16 @@
                                  (pos? total-copper)) "" "none")]
     
     [:div 
-     [:h2.ppu-title title]
+     [:h1.ppu-title title]
      [toggle-ppu state] 
      [:div
+      [item-drop-select state] 
       [input-group state]
       [quantity-input state]
+      [:button.btn.btn-default {:type "button"
+                                :on-click (partial submit state)}
+        "Ready to submit?"]
+
       ]
      
      (if (ppu?)
