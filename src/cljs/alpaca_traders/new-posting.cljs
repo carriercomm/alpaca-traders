@@ -18,21 +18,21 @@
                    ]
   )
 
-(defn item-to-option [item]
+(defn item-to-option [item prefix]
   "Create an HTML Option. If value is nil, option is disabled. 
   Defaults to disabled options."
   (let [{value :id 
          label :name} item]
     [:option {:value value
-              :key value
+              :key (str prefix value)
               :disabled (nil? value)
               } label]
     )
   )
 
 (defn item-select [state items] 
-  (let [options  (map item-to-option items)]
-    [:select {
+  (let [options  (map #(item-to-option % " item") items)]
+    [:select {:key "item-select"
                :on-change #(swap! state assoc :item-id (int (.-target.value %)))
                :value (:item-id @state)
               }
@@ -42,8 +42,8 @@
   )
 
 (defn server-select [state servers] 
-  (let [options  (map item-to-option servers)]
-    [:select {
+  (let [options  (map #(item-to-option % " server") servers)]
+    [:select {:key "server-select"
                :on-change #(swap! state assoc :server-id (int (.-target.value %)))
                :value (:server-id @state)
               }
@@ -169,8 +169,9 @@
      [:div
       [item-select state items]
       [server-select state test-servers]
-      
-      (doall (map #(% state) [input-group quantity-input submit-button]))
+      [input-group state]
+      [quantity-input state]
+      [submit-button state]
       ]
      
      (if (ppu?)
