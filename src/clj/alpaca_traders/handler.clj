@@ -1,12 +1,14 @@
 (ns alpaca-traders.handler
-  (:require [compojure.core :refer [GET defroutes]]
+  (:require [compojure.core :refer [GET POST defroutes]]
             [compojure.route :refer [not-found resources]]
-            [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
             [hiccup.core :refer [html]]
             [hiccup.page :refer [include-js include-css]]
             [prone.middleware :refer [wrap-exceptions]]
             [ring.middleware.reload :refer [wrap-reload]]
-            [environ.core :refer [env]]))
+            [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
+            [environ.core :refer [env]]
+            )
+  )
 
 (def home-page
   (html
@@ -24,8 +26,15 @@
         " in order to start the compiler"]]
       (include-js "js/app.js")]]))
 
+(defn save-document [doc]
+  (print doc)
+  {:status "ok"})
+
 (defroutes routes
   (GET "/" [] home-page)
+  (GET "/new-posting" [] "hi")
+  (POST "/new-posting" {:keys [body-params]}
+        (save-document body-params))
   (resources "/")
   (not-found "Not Found"))
 

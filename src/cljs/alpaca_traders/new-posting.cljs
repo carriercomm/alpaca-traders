@@ -119,12 +119,11 @@
   )
 
 (defn submit [state] 
-  (let [request {:method :post
-                 :json @state
-                 :response-format :json
+  (let [request {:params @state
+                 :handler #(js/alert %) 
                  }
         response (POST "/new-posting" request)]
-    (.log js/console response)
+    ; (.log js/console response)
   )
 )
 
