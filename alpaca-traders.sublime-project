@@ -1,0 +1,23 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+      "folder_exclude_patterns": [
+        "resources",
+        "dev-resources", 
+        "target",
+        "rethinkdb_data",
+        "node_modules",
+        "dev",
+        ".idea"]
+		},
+		{
+			"path": "src"
+		},
+
+	],
+  "settings": {
+    "tab_size": 2
+  }
+}
