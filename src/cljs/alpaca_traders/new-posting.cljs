@@ -1,6 +1,7 @@
 (ns alpaca-traders.new-posting
   "Reagent component to create a new posting on alpaca-traders"
-  (:require [reagent.core :as r :refer [atom]]
+  (:require [clojure.string :refer [capitalize]]
+            [reagent.core :as r :refer [atom]]
             [alpaca-traders.money-group :as money]
             [cljs.test :refer-macros [deftest is testing run-tests]]
             [ajax.core :refer [POST]])
@@ -25,7 +26,6 @@
          label :name} item]
     [:option {:value value
               :key (str prefix value)
-              :disabled (nil? value)
               } label]
     )
   )
@@ -60,7 +60,7 @@
                "Per Unit?")]
     [:a {
          :on-click #(swap! state assoc :use-ppu (not ppu?))
-         }
+    }
      name]
     )
   )
@@ -90,7 +90,7 @@
      [:label.currency {
               :for currency
               :class currency
-              :title currency}]
+              :title (capitalize currency)}]
      ]
     )
   )
@@ -107,7 +107,7 @@
   (let [quantity (:quantity @state)
         plural (if (= 1 quantity) "" "s")]
     [:div.quantity
-     [:input.quantity.off {
+     [:input {
                            :type "number"
                            :id "quantity"
                            :min "1"
@@ -156,7 +156,7 @@
         ppu? #(-> @state :use-ppu true?)
         quantity (:quantity @state)
         title (if (ppu?) "Price Per Unit" "Total Price")
-        total-copper (money/to-coppers (:price @state))
+        total-copper (-> @state :price money/to-coppers)
         summary-display (if (and (> quantity 1)
                                  (pos? total-copper)) "" "none")
         items test-items
@@ -170,15 +170,15 @@
       [server-select state test-servers]
       [input-group state]
       [quantity-input state]
+      
+      (if (ppu?)
+        [:p.summary {:style {:display summary-display}} 
+         "Total ➔ " (-> @state money/to-total money/to-string) " for " quantity " units."]
+        [:div.alert.alert-info.summary {:style {:display summary-display}}
+         "Cost per unit ➔ " [money/ppu-view @state]]
+        )
       [submit-button state]
       ]
-     
-     (if (ppu?)
-       [:p {:style {:display summary-display}} 
-        "Total ➔ " (-> @state money/to-total money/to-string) " for " quantity " units."]
-       [:p {:style {:display summary-display}}
-        "Cost per unit ➔ "(-> @state money/to-ppu money/to-string) ]
-       )
      ]
     )
   )

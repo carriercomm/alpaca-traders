@@ -3,7 +3,7 @@
             [cljs.test :refer-macros [deftest is testing run-tests]]))
 
 (def default-group {
-                    :platinum 0
+                    :platinum 0 
                     :gold 0
                     :silver 0
                     :copper 0
@@ -80,6 +80,28 @@
 
 (defn rebalance [unbalanced-group]
   (-> unbalanced-group to-coppers to-group)
+  )
+
+;; Dumb ass views
+(defn currency-view [currency-seq] 
+  (let [type (first currency-seq)
+        value (second currency-seq)
+        should-render? (> value 0)]
+    (if should-render?
+      [:div {:key currency-seq} 
+        [:span.currency-value value]
+        [:span {:class type}]
+      ]))
+  )
+
+(defn ppu-view [$-with-quantity] 
+  (let [ppu (to-ppu $-with-quantity)
+        free? (-> $-with-quantity :price to-coppers (<= 0))]
+    (if free?
+      [:div "free"]
+      [:div (map currency-view (seq ppu))]
+      )
+    )
   )
 
 ;; Le tests

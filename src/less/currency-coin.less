@@ -1,6 +1,18 @@
 label.currency {
   cursor: pointer;
   margin-right: .8em;
+  float: right;
+}
+
+input.currency {
+  width: 3em;
+  &.platinum {
+    width: 5em;
+  }  
+}
+
+span.currency-value {
+  margin-left: .4em;
 }
 
 .platinum, .gold, .silver, .copper {
@@ -10,7 +22,7 @@ label.currency {
   height: 1em;
   margin: .25em;
   border: 2px solid black;
-  float: right;
+  display: inline-block;
 }
 
 .platinum {
@@ -24,6 +36,7 @@ label.currency {
 .silver {
   background-color: silver;
 }
+
 .copper {
   background-color: #B87333;
 }

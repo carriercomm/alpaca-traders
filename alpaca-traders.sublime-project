@@ -10,6 +10,7 @@
         "rethinkdb_data",
         "node_modules",
         "dev",
+        "src",
         ".idea"]
 		},
 		{
