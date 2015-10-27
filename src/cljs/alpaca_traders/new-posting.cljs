@@ -162,12 +162,12 @@
         items test-items
         servers test-servers]
     
-    [:div 
+    [:div.posting-form 
      [:h1.ppu-title title]
      [toggle-ppu state] 
      [:div
-      [item-select state items]
       [server-select state test-servers]
+      [item-select state items]
       [input-group state]
       [quantity-input state]
       

@@ -57,7 +57,7 @@
 
                    :dependencies [[ring/ring-mock "0.3.0"]
                                   [ring/ring-devel "1.4.0"]
-                                  [lein-figwheel "0.4.0"]
+                                  [lein-figwheel "0.4.1"]
                                   [org.clojure/tools.nrepl "0.2.11"]
                                   [pjstadig/humane-test-output "0.7.0"]]
 

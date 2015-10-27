@@ -1,33 +1,44 @@
-select {
-  margin-top : .5em;
-  margin-right: 2.2em;
-}
+.posting-form {
+  background-color: steelblue;
+  opacity: 0.95;
+  padding: 2em;
+  border-radius: 2px;
+  border: solid lightgray 2px;
 
-input, select {
-  width: 10em;
-}
-
-button {
-  margin-top: .5em;
-}
-
-h1.ppu-title {
-  display: inline-block;
-  padding-right: .5em;
-}
-
-.quantity {
-  input {
-    width: 5em;
+  a {
+    text-decoration: underline;
   }
-  margin-top: .1em;
-}
 
-div.currency-row {
-  display: inline-block;
-  margin-top: .5em;
-} 
+  select {
+    width: 15em;
+    margin-bottom: .5em;
+  }
 
-p.summary {
-  margin-top: .5em;
+  input {
+    width: 4em;
+    margin-bottom: 1em;
+    margin-right: .25em;
+
+    &#gold, &#silver, &#copper {
+      width: 2em;
+    }
+  }
+
+  h1.ppu-title {
+    display: inline-block;
+    margin-right: 1em;
+  }
+
+  .quantity {
+    margin-bottom: .1em;
+  }
+
+  div.currency-row {
+    display: inline-block;
+    margin-top: .5em;
+  } 
+
+  p.summary {
+    margin-bottom: .5em;
+  }
 }
