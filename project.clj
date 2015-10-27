@@ -39,7 +39,7 @@
 
   :source-paths ["src/clj" "src/cljc"]
   
-   :less {:source-paths ["src/less"]
+   :less {:source-paths ["resources/public/less"]
          :target-path "resources/public/css"}
   
   :minify-assets
