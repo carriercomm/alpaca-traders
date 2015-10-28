@@ -1,13 +1,25 @@
-label.currency {
-  margin-right: .8em;
+.currency-row {
+  display: inline-block;
+}
+
+.currency-value {
+  vertical-align: text-top;
 }
 
 .platinum, .gold, .silver, .copper {
   border-radius: 50%;
-  width: 1.3em;
-  height: 1.3em;
+  width: 1.2em;
+  height: 1.2em;
   border: 3px solid white;
+  display: inline-block;
   float: right;
+  margin-right: .8em;
+
+  &.read-only {
+    float: unset;
+    margin-left: .3em;
+    margin-right: .3em;
+  }
 }
 
 .platinum {

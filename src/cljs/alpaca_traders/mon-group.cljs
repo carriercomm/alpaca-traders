@@ -88,19 +88,26 @@
         value (second currency-seq)
         should-render? (> value 0)]
     (if should-render?
-      [:div {:key currency-seq} 
-        [:span.currency-value value]
-        [:span {:class type}]
-      ]))
+      [:span {:key currency-seq} 
+       [:span.currency-value value]
+       [:div.read-only {:class type}]
+       ]))
   )
 
 (defn ppu-view [$-with-quantity] 
   (let [ppu (to-ppu $-with-quantity)
-        free? (-> $-with-quantity :price to-coppers (<= 0))]
-    (if free?
-      [:div "free"]
-      [:div (map currency-view (seq ppu))]
-      )
+        not-free? (-> $-with-quantity :price to-coppers (> 0))]
+    (if not-free?
+      [:div.currency-row (map currency-view (seq ppu))])
+    )
+  )
+
+
+(defn total-view [ppu-with-quantity] 
+  (let [total (to-total ppu-with-quantity)
+        not-free? (-> total to-coppers (> 0))]
+    (if not-free?
+      [:div.currency-row (map currency-view (seq total))])
     )
   )
 

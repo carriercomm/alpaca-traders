@@ -145,7 +145,7 @@
 
 
 (def default-state (r/atom {:price money/default-group
-                          :quantity 1
+                          :quantity 1 
                           :use-ppu false
                           :item-id nil
                           :server-id nil
@@ -171,14 +171,14 @@
       [input-group state]
       [quantity-input state]
       
-      (if (ppu?)
-        [:p.summary {:style {:display summary-display}} 
-         "Total ➔ " (-> @state money/to-total money/to-string) " for " quantity " units."]
-        [:div.alert.alert-info.summary {:style {:display summary-display}}
-         "Cost per unit ➔ " [money/ppu-view @state]]
-        )
-      [submit-button state]
+      [:div.alert.alert-info.summary 
+       {:style {:display summary-display}} 
+       (if (ppu?) 
+         [:div "Total ➔ " [money/total-view @state]]
+         [:div "Cost per unit ➔ " [money/ppu-view @state]]
+         )]
       ]
+     [submit-button state]
      ]
     )
   )

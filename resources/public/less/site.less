@@ -3,6 +3,8 @@
 @import "new-posting.less";
 @import "currency-coin.less";
 
+@default-font-size: 20px !important;
+
 body {
   background-image: url("/img/alpaca.png");
   background-position: top left;
@@ -39,8 +41,8 @@ h3 {
   font-size: 1.5em;
 }
 
-p, select, label, input, button {
-  font-size: 20px !important;
+p, select, label, input, button, .alert {
+  font-size: @default-font-size;
 }
 
 button {

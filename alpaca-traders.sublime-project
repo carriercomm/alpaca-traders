@@ -4,8 +4,8 @@
 		{
 			"path": ".",
       "folder_exclude_patterns": [
-        "resources",
         "dev-resources", 
+        "resources",
         "target",
         "rethinkdb_data",
         "node_modules",
@@ -13,9 +13,12 @@
         "src",
         ".idea"]
 		},
-		{
-			"path": "src"
-		},
+    {
+      "path": "src"
+    },
+    {
+      "path": "resources/public/less"
+    }
 
 	],
   "settings": {

@@ -17,4 +17,4 @@ pom.xml
 pom.xml.asc
 profiles.clj
 rethink_data/
-alpaca-traders.sublime-workspace
+*.sublime-workspace
