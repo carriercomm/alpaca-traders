@@ -162,7 +162,7 @@
         items test-items
         servers test-servers]
     
-    [:div.posting-form 
+    [:div.alpaca-form.new-posting 
      [:h1.ppu-title title]
      [toggle-ppu state] 
      [:div
