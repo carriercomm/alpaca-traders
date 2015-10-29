@@ -23,7 +23,7 @@
   )
 
 (defn to-coppers [money-group]
-  (reduce + (map money-amount-to-coppz (seq money-group)))
+  (reduce + (map money-amount-to-coppz money-group))
   )
 
 (defn- reduce-to-group [m]
@@ -84,9 +84,8 @@
 
 ;; Dumb ass views
 (defn currency-view [currency-seq] 
-  (let [type (first currency-seq)
-        value (second currency-seq)
-        should-render? (> value 0)]
+  (let [[type value] currency-seq
+        should-render? (pos? value)]
     (if should-render?
       [:span {:key currency-seq} 
        [:span.currency-value value]
@@ -105,9 +104,9 @@
 
 (defn total-view [ppu-with-quantity] 
   (let [total (to-total ppu-with-quantity)
-        not-free? (-> total to-coppers (> 0))]
+        not-free? (-> total to-coppers pos?)]
     (if not-free?
-      [:div.currency-row (map currency-view (seq total))])
+      [:div.currency-row (map currency-view total)])
     )
   )
 
