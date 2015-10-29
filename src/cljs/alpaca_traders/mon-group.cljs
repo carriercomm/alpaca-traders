@@ -96,9 +96,9 @@
 
 (defn ppu-view [$-with-quantity] 
   (let [ppu (to-ppu $-with-quantity)
-        not-free? (-> $-with-quantity :price to-coppers (> 0))]
+        not-free? (-> $-with-quantity :price to-coppers pos?)]
     (if not-free?
-      [:div.currency-row (map currency-view (seq ppu))])
+      [:div.currency-row (map currency-view ppu)])
     )
   )
 

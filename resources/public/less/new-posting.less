@@ -8,12 +8,18 @@
     margin-bottom: .5em;
   }
 
-  input {
-    width: 4em;
+  .currency-input {
+    display: inline-block;
     margin-bottom: 1em;
+  }
+
+  input {
+    border-radius: 2px;
+    width: 4em;
     margin-right: .25em;
 
     &#gold, &#silver, &#copper {
+      display: inline-block;
       width: 2em;
     }
   }
@@ -24,13 +30,14 @@
   }
 
   .quantity {
-    margin-bottom: .1em;
+    margin-bottom: 1em;
   }
 
+  div.currency-row {
+    display: inline-block;
+  } 
+
   .summary {
-    margin-bottom: .5em;
-    span {
-      vertical-align: text-top; 
-    }
+    margin-bottom: 1em;
   }
 }

@@ -5,7 +5,8 @@
 			"path": ".",
       "folder_exclude_patterns": [
         "dev-resources", 
-        "resources",
+        "resources/js/out",
+        "resources/css",
         "target",
         "rethinkdb_data",
         "node_modules",

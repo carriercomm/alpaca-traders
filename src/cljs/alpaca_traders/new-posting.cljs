@@ -78,7 +78,7 @@
 (defn currency-input [state param ppu? quantity]
   (let [currency (str (name param))
         value (currency-value state param ppu?)]
-    [:div.currency-row {:key (str param)}
+    [:div.currency-input {:key (str param)}
      [:input.currency {
                        :id currency
                        :type "number"
@@ -97,7 +97,7 @@
 
 (defn input-group [state ppu? quantity]
   (let [currency-keys [:platinum :gold :silver :copper]]
-    [:div 
+    [:div
      (doall (map #(currency-input state % ppu? quantity) currency-keys))
      ]
     )
@@ -144,8 +144,9 @@
   )
 
 
-(def default-state (r/atom {:price money/default-group
-                          :quantity 1 
+(def default-state (r/atom {:price 
+                            (assoc money/default-group :platinum 4)
+                          :quantity 3 
                           :use-ppu false
                           :item-id nil
                           :server-id nil
