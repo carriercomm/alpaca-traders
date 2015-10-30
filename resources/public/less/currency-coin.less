@@ -2,10 +2,12 @@
   display: inline-block;
 }
 
+@coin-diameter: 1.7em;
+
 .platinum, .gold, .silver, .copper {
   border-radius: 50%;
-  width: 1.2em;
-  height: 1.2em;
+  width: @coin-diameter;
+  height: @coin-diameter;
   border: 3px solid white;
   display: inline-block;
   float: right;
@@ -24,6 +26,7 @@
 
 .platinum {
   background-color: white;
+  border-color: silver;
 }
 
 .gold {
