@@ -4,7 +4,10 @@
             [secretary.core :as secretary :include-macros true]
             [goog.events :as events]
             [goog.history.EventType :as EventType]
-            [alpaca-traders.new-posting :as posting :refer [create]]
+            
+            [alpaca-traders.about :as about :refer [view]]
+            [alpaca-traders.new-posting :as post :refer [create]]
+            [alpaca-traders.postings :as postings :refer [view]]
             [alpaca-traders.nav-bar :as nav-bar :refer [create]])
   (:import goog.History)
   )
@@ -12,11 +15,6 @@
 (enable-console-print!)
 ;; -------------------------
 ;; Views
-
-(defn home-page []
-  [:div
-   [posting/create {}]])
-
 (defn current-page []
   [:div [(session/get :current-page)]])
 
@@ -25,7 +23,13 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-                    (session/put! :current-page #'home-page))
+                    (session/put! :current-page #'postings/view))
+
+(secretary/defroute "/about" []
+                    (session/put! :current-page #'about/view))
+
+(secretary/defroute "/post/create" []
+                    (session/put! :current-page #'post/create))
 
 ;; -------------------------
 ;; History

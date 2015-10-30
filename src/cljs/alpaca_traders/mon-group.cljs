@@ -110,7 +110,9 @@
     )
   )
 
+;;
 ;; Le tests
+;;
 (deftest test-to-total 
   (let [money-group (assoc default-group :gold 4)
         quantity 2
