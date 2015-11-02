@@ -1,28 +1,22 @@
 {
-	"folders":
-	[
-		{
-			"path": ".",
-      "folder_exclude_patterns": [
-        "dev-resources", 
-        "resources/js/out",
-        "resources/css",
-        "target",
-        "rethinkdb_data",
-        "node_modules",
-        "dev",
-        "src",
-        ".idea"]
-		},
-    {
-      "path": "src"
+	"folders": [
+  {"path": ".",
+  "folder_exclude_patterns": [ "dev-resources", 
+  "resources",
+  "target",
+  "rethinkdb_data",
+  "node_modules",
+  "dev",
+  "src",
+  ".idea"]
+  },
+  {
+    "path": "src"
     },
     {
       "path": "resources/public/less"
+      }],
+      "settings": {
+        "tab_size": 2
+      }
     }
-
-	],
-  "settings": {
-    "tab_size": 2
-  }
-}
