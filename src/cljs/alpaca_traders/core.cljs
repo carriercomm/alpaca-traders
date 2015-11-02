@@ -1,18 +1,22 @@
 (ns alpaca-traders.core
   (:require [reagent.core :as reagent :refer [atom]]
             [reagent.session :as session]
+            [re-frame.core :as re-frame :refer [dispatch]]
             [secretary.core :as secretary :include-macros true]
             [goog.events :as events]
             [goog.history.EventType :as EventType]
-            
             [alpaca-traders.about :as about :refer [view]]
+            [alpaca-traders.handlers]
+            [alpaca-traders.nav-bar :as nav-bar :refer [create]]
             [alpaca-traders.new-posting :as post :refer [create]]
             [alpaca-traders.postings :as postings :refer [view]]
-            [alpaca-traders.nav-bar :as nav-bar :refer [create]])
+            [alpaca-traders.search :as search :refer [create]]
+            [alpaca-traders.subs])
   (:import goog.History)
   )
 
 (enable-console-print!)
+
 ;; -------------------------
 ;; Views
 (defn current-page []
@@ -22,8 +26,16 @@
 ;; Routes
 (secretary/set-config! :prefix "#")
 
-(secretary/defroute "/" []
-                    (session/put! :current-page #'postings/view))
+(secretary/defroute "/" [selected-item] 
+                    (session/put! :current-page #'search/create))
+
+(secretary/defroute 
+    "/search/:item/:server" 
+    [item server]
+    (re-frame/dispatch [:select-item item])
+    (re-frame/dispatch [:select-server server])
+    (session/put! :current-page #'search/create)
+  )
 
 (secretary/defroute "/about" []
                     (session/put! :current-page #'about/view))
@@ -47,10 +59,10 @@
 (defn mount-root []
   (reagent/render [:div 
                    [nav-bar/create] 
-                   [current-page]
-                   ]
+                   [current-page]]
                   (.getElementById js/document "app")))
 
 (defn init! []
+  (re-frame/dispatch [:initialize-db])
   (hook-browser-navigation!)
   (mount-root))

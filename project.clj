@@ -10,6 +10,7 @@
                  [reagent "0.5.1"]
                  [reagent-forms "0.5.11"]
                  [reagent-utils "0.1.5"]
+                 [re-frame "0.5.0-alpha1"]
                  [rethinkdb "0.10.1"]
                  [ring "1.4.0"]
                  [ring/ring-defaults "0.1.5"]
