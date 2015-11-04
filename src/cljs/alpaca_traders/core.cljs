@@ -54,13 +54,17 @@
         (secretary/dispatch! (.-token event))))
     (.setEnabled true)))
 
+(def app-root
+  [:div 
+   [nav-bar/create] 
+   [current-page]
+   ])
+
 ;; -------------------------
 ;; Initialize app
 (defn mount-root []
-  (reagent/render [:div 
-                   [nav-bar/create] 
-                   [current-page]]
-                  (.getElementById js/document "app")))
+  (reagent/render app-root (.getElementById js/document "app"))
+  )
 
 (defn init! []
   (re-frame/dispatch [:initialize-db])

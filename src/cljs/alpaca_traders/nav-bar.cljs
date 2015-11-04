@@ -2,23 +2,23 @@
   (:require [reagent.core :as reagent :refer [atom]])
   )
 
-(def links [["Postings" "#"]
-            ["New Post" "#post/create"]
+(def links [["[Alpaca Traders]" "#"]
+            ["Buy" "#"]
+            ["Sell" "#post/create"]
             ["About" "#about"]
             ])
 
 (defn to-nav-bar-link [[title link]]
-  [:a.navbar-brand 
+  [:a
    {:href link
     :key title}
-   title]
+   [:span
+    [:h1 title]]]
   )
 
 (defn create [] 
-  [:nav.navbar.navbar-default
-   [:div.navbar-header
+  [:div.mast
    (do 
      (map to-nav-bar-link links)
      )]
-   ]
   )
