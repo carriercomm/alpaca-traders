@@ -23,7 +23,7 @@
   )
 
 (register-handler
-  :listings-for-item
+  :search-for-listings
   [(path :listings) trim-v]
   (fn [listings [item server]]
     (db/get-listings item server)

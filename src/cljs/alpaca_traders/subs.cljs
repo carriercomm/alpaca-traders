@@ -35,3 +35,10 @@
     (reaction (:servers @db))
     )
   )
+
+(register-sub 
+  :listings 
+  (fn [db _]
+    (reaction (:listings @db))
+    )
+  )
