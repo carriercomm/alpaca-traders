@@ -13,6 +13,7 @@
 /out
 /resources/public/js
 /target
+/node_modules
 pom.xml
 pom.xml.asc
 profiles.clj
