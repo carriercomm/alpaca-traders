@@ -9,9 +9,7 @@
             ])
 
 (defn to-nav-bar-link [[title link]]
-  [:a
-   {:href link
-    :key title}
+  [:a {:href link :key title}
    [:span
     [:h1 title]]]
   )
