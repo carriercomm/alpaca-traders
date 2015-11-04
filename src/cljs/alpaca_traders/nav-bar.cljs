@@ -5,8 +5,8 @@
 (def links [["[Alpaca Traders]" "#"]
             ["Buy" "#"]
             ["Sell" "#post/create"]
-            ["About" "#about"]
-            ])
+            ["About" "#about"]]
+  )
 
 (defn to-nav-bar-link [[title link]]
   [:a {:href link :key title}
@@ -16,7 +16,5 @@
 
 (defn create [] 
   [:div.mast
-   (do 
-     (map to-nav-bar-link links)
-     )]
+   (map to-nav-bar-link links)]
   )
