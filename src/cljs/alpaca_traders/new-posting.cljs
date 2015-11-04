@@ -4,7 +4,7 @@
             [reagent.core :as r :refer [atom]]
             [alpaca-traders.money-group :as money]
             [cljs.test :refer-macros [deftest is testing run-tests]]
-            [ajax.core :refer [POST]])
+            [ajax.core :refer [ajax-request]])
              )
 
 (def test-items [{:name "Choose an item" :id nil}
@@ -119,11 +119,15 @@
   )
 
 (defn submit [state] 
-  (let [request {:params @state
-                 :handler #(js/alert %) 
+  (let [request {
+                 :uri "/new-posting"
+                 :method :post
+                 :params (clj->js @state)
+                 :handler #(js/alert %)
+                 :format :json
+                 :response-format :json 
                  }
-        response (POST "/new-posting" request)]
-    ; (.log js/console response)
+        response (ajax-request request)]
   )
 )
 
@@ -132,7 +136,8 @@
   Might want to check if they're natural numbers as well."
   (let [{item :item-id
          server :server-id} @state]
-    (and item server)
+    ;(and item server)
+    true
     )
   )
 
