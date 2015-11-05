@@ -12,10 +12,7 @@
             [alpaca-traders.postings :as postings :refer [view]]
             [alpaca-traders.search :as search :refer [create]]
             [alpaca-traders.subs])
-  (:import goog.History)
-  )
-
-(enable-console-print!)
+  (:import goog.History))
 
 ;; -------------------------
 ;; Views
