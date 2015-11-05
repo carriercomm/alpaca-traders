@@ -1,8 +1,7 @@
 (ns alpaca-traders.search
   (:require [reagent.core :as r :refer [atom]]
             [re-frame.core :refer [subscribe dispatch]]
-            [alpaca-traders.money-group :as money])
-  )
+            [alpaca-traders.money-group :as money]))
 
 (defn item-to-option [item prefix]
   "Create an HTML Option. If value is nil, option is disabled. 
@@ -11,28 +10,23 @@
          label :name} item]
     [:option {:value value
               :key (str prefix value)
-              } label]
-    )
-  )
+              } label]))
 
 (defn item-select [] 
   (let [items (subscribe [:items])
         options  (map #(item-to-option % " item") @items)]
     [:select {:key "item-select"
               :on-change #(dispatch [:select-item (.-target.value %)])
-              :value @(subscribe [:item])} options])
-  )
+              :value @(subscribe [:item])} options]))
 
 (defn server-select [] 
   (let [servers (subscribe [:servers])
         options  (map #(item-to-option % " server") @servers)]
     [:select {:on-change #(dispatch [:select-server (.-target.value %)])
-              :value @(subscribe [:server])} options])
-  )
+              :value @(subscribe [:server])} options]))
 
 (defn listings-table [listings]
-  [:div] 
-  )
+  [:div])
 
 (defn create [] 
   [:div.default-body.search
@@ -44,6 +38,4 @@
       {:type "button"
        :on-click #(dispatch [:search-for-listings 1 2])}
      "Search"]
-   (str @(subscribe [:listings]))
-   ]
-  )
+   (str @(subscribe [:listings]))])

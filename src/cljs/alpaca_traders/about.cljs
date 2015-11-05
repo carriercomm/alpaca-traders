@@ -10,8 +10,7 @@
   
   Dessert tootsie roll apple pie sweet roll cupcake. Tart candy canes topping. Lollipop croissant pie soufflé. Tiramisu biscuit soufflé lollipop tootsie roll. Caramels biscuit pudding marshmallow cupcake powder halvah. Liquorice macaroon gummies cookie biscuit. Halvah chocolate cake caramels croissant cotton candy. Jelly candy canes marshmallow candy canes topping liquorice brownie. Oat cake marshmallow muffin sweet roll cake toffee macaroon chocolate cake. Chupa chups liquorice chocolate cake pudding jelly beans marshmallow. Bonbon topping cheesecake topping soufflé. Powder danish pastry cupcake pudding. Chocolate jelly-o danish gummi bears soufflé cake jelly-o candy canes.
   
-  Candy macaroon marshmallow. Candy canes pastry fruitcake. Powder caramels wafer caramels powder. Gummi bears candy gingerbread gummi bears. Donut fruitcake jujubes biscuit bonbon bonbon jelly beans. Pudding cupcake sugar plum. Donut cake chocolate cotton candy tootsie roll caramels. Bonbon jelly wafer. Soufflé powder sweet lollipop. Muffin dragée sweet roll muffin wafer. Cotton candy bonbon pastry jelly candy pastry cake jelly-o dragée. Icing gummies marzipan pastry biscuit jujubes chocolate bar. Tiramisu cheesecake pastry lollipop apple pie jelly cotton candy ice cream."
-  )
+  Candy macaroon marshmallow. Candy canes pastry fruitcake. Powder caramels wafer caramels powder. Gummi bears candy gingerbread gummi bears. Donut fruitcake jujubes biscuit bonbon bonbon jelly beans. Pudding cupcake sugar plum. Donut cake chocolate cotton candy tootsie roll caramels. Bonbon jelly wafer. Soufflé powder sweet lollipop. Muffin dragée sweet roll muffin wafer. Cotton candy bonbon pastry jelly candy pastry cake jelly-o dragée. Icing gummies marzipan pastry biscuit jujubes chocolate bar. Tiramisu cheesecake pastry lollipop apple pie jelly cotton candy ice cream.")
 
 (defn break-into-paragraphs [text]
   (let [paragraphs (remove 
@@ -20,8 +19,7 @@
     (map 
       #(do 
          [:p {:key %} %])
-      paragraphs))
-  )
+      paragraphs)))
 
 (defn view []
   [:div.default-body 

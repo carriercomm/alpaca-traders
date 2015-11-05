@@ -1,9 +1,7 @@
 (ns alpaca-traders.subs
   (:require-macros [reagent.ratom :refer [reaction]])
   (:require [re-frame.core :refer [register-sub]]
-            [alpaca-traders.db :refer [initial-state]]
-    )
-  )
+            [alpaca-traders.db :refer [initial-state]]))
 
 ;;Register some subs
 
@@ -11,34 +9,24 @@
   :items
   (fn [db _]
     (print db)
-    (reaction (:items @db))
-    )
-  )
+    (reaction (:items @db))))
 
 (register-sub 
   :item
   (fn [db _]
-    (reaction (:item @db))
-    )
-  )
+    (reaction (:item @db))))
 
 (register-sub 
   :server
   (fn [db _]
-    (reaction (:server @db))
-    )
-  )
+    (reaction (:server @db))))
 
 (register-sub 
   :servers 
   (fn [db _]
-    (reaction (:servers @db))
-    )
-  )
+    (reaction (:servers @db))))
 
 (register-sub 
   :listings 
   (fn [db _]
-    (reaction (:listings @db))
-    )
-  )
+    (reaction (:listings @db))))

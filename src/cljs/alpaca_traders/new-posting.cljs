@@ -4,20 +4,15 @@
             [reagent.core :as r :refer [atom]]
             [alpaca-traders.money-group :as money]
             [cljs.test :refer-macros [deftest is testing run-tests]]
-            [ajax.core :refer [ajax-request]])
-             )
+            [ajax.core :refer [ajax-request]]))
 
 (def test-items [{:name "Choose an item" :id nil}
                  {:name "Bone chips" :id 1}
-                 {:name "Duck chips" :id 2}
-                 ]
-  )
+                 {:name "Duck chips" :id 2}])
 
 (def test-servers [{:name "Choose a server" :id nil}
                    {:name "Mal'Ganis" :id 1}
-                   {:name "Tyrael" :id 2}
-                   ]
-  )
+                   {:name "Tyrael" :id 2}])
 
 (defn item-to-option [item prefix]
   "Create an HTML Option. If value is nil, option is disabled. 
@@ -26,9 +21,7 @@
          label :name} item]
     [:option {:value value
               :key (str prefix value)
-              } label]
-    )
-  )
+              } label]))
 
 (defn item-select [state items] 
   (let [options  (map #(item-to-option % " item") items)]
@@ -36,10 +29,7 @@
                :on-change #(swap! state assoc :item-id (int (.-target.value %)))
                :value (:item-id @state)
               }
-     options
-     ]
-    )
-  )
+     options]))
 
 (defn server-select [state servers] 
   (let [options  (map #(item-to-option % " server") servers)]
@@ -47,10 +37,7 @@
                :on-change #(swap! state assoc :server-id (int (.-target.value %)))
                :value (:server-id @state)
               }
-     options
-     ]
-    )
-  )
+     options]))
 
 (defn toggle-ppu [state]
   "value -> str"
@@ -61,19 +48,14 @@
     [:a {
          :on-click #(swap! state assoc :use-ppu (not ppu?))
     }
-     name]
-    )
-  )
+     name]))
 
 (defn currency-value [state param ppu?]
   (let [{currency :price
          quantity :quantity} @state]
     (if (true? ppu?)
       (-> currency param (/ quantity))
-      (-> currency param)
-      )
-    )
-  )
+      (-> currency param))))
 
 (defn currency-input [state param ppu? quantity]
   (let [currency (str (name param))
@@ -90,18 +72,13 @@
      [:label.currency {
               :for currency
               :class currency
-              :title (capitalize currency)}]
-     ]
-    )
-  )
+              :title (capitalize currency)}]]))
 
 (defn input-group [state ppu? quantity]
   (let [currency-keys [:platinum :gold :silver :copper]]
     [:div
      (doall (map #(currency-input state % ppu? quantity) currency-keys))
-     ]
-    )
-  )
+     ]))
 
 (defn quantity-input [state]
   (let [quantity (:quantity @state)
@@ -114,9 +91,7 @@
                            :on-change #(swap! state assoc :quantity (int (.-target.value %)))
                            :value (:quantity @state) }] 
      [:label {:for "quantity"} "unit" plural]
-     ]
-    )
-  )
+     ]))
 
 (defn submit [state] 
   (let [request {
@@ -127,9 +102,7 @@
                  :format :json
                  :response-format :json 
                  }
-        response (ajax-request request)]
-  )
-)
+        response (ajax-request request)]))
 
 (defn valid? [state]
   "Server and item must not be nil. 
@@ -137,16 +110,13 @@
   (let [{item :item-id
          server :server-id} @state]
     ;(and item server)
-    true
-    )
-  )
+    true))
 
 (defn submit-button [state]
   [:button.btn.btn-default {:type "button"
                             :on-click (partial submit state)
                             :disabled (not (valid? state))}
-   "Ready to submit?"]
-  )
+   "Ready to submit?"])
 
 
 (def default-state (r/atom {:price 
@@ -181,10 +151,7 @@
        {:style {:display summary-display}} 
        (if (ppu?) 
          [:div "Total ➔ " [money/total-view @state]]
-         [:div "Cost per unit ➔ " [money/ppu-view @state]]
-         )]
+         [:div "Cost per unit ➔ " [money/ppu-view @state]])]
       ]
      [submit-button state]
-     ]
-    )
-  )
+     ]))
