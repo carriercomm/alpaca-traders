@@ -39,5 +39,7 @@
   (not-found "Not Found"))
 
 (def app
-  (let [handler (wrap-defaults #'routes site-defaults)]
+  (let [site-prefs (assoc-in site-defaults [:security :anti-forgery] false)
+        handler (wrap-defaults #'routes site-prefs)]
+    (print site-prefs)
     (if (env :dev) (-> handler wrap-exceptions wrap-reload) handler)))
