@@ -24,15 +24,8 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" [selected-item] 
+                    (dispatch [:search-for-listings])
                     (session/put! :current-page #'search/create))
-
-(secretary/defroute 
-    "/search/:item/:server" 
-    [item server]
-    (re-frame/dispatch [:select-item item])
-    (re-frame/dispatch [:select-server server])
-    (session/put! :current-page #'search/create)
-  )
 
 (secretary/defroute "/about" []
                     (session/put! :current-page #'about/view))

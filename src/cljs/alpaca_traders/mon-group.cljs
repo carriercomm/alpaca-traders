@@ -2,7 +2,7 @@
   (:require [clojure.string :as string] 
             [cljs.test :refer-macros [deftest is testing run-tests]]))
 
-(def default-group {:platinum 0 
+(def default-group {:platinum 0
                     :gold 0
                     :silver 0
                     :copper 0})
@@ -68,7 +68,7 @@
   (let [[type value] currency-seq
         should-render? (pos? value)]
     (if should-render?
-      [:span {:key currency-seq} 
+      [:div.currency-row {:key currency-seq} 
        [:span.currency-value value]
        [:div.read-only {:class type}]
        ])))
@@ -84,7 +84,12 @@
   (let [total (to-total ppu-with-quantity)
         not-free? (-> total to-coppers pos?)]
     (if not-free?
-      [:div.currency-row (map currency-view total)])))
+      [:div (map currency-view total)])))
+
+(defn price-view [total]
+  (let [not-free? (-> total to-coppers pos?)]
+    (if not-free?
+      [:div (map currency-view total)]))  )
 
 ;;
 ;; Le tests

@@ -19,3 +19,4 @@ pom.xml.asc
 profiles.clj
 rethink_data/
 *.sublime-workspace
+rethinkdb_data

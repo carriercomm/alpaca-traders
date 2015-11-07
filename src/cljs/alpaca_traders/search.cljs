@@ -25,17 +25,51 @@
     [:select {:on-change #(dispatch [:select-server (.-target.value %)])
               :value @(subscribe [:server])} options]))
 
-(defn listings-table [listings]
-  [:div])
+(defn table-row [listing] 
+  (let [{contact-name :contact-name
+         item :item
+         price :price 
+         quantity :quantity
+         server :server} listing
+        ppu (if (= 1 quantity) "-" 
+              (money/ppu-view listing))]
+    [:tr {:key (str contact-name item price)}
+     [:td item]
+     [:td (money/price-view price)]
+     [:td quantity]
+     [:td ppu]
+     [:td server]
+     [:td contact-name]
+     ]))
+
+(defn listings-table []
+  ;;Obviously a table that has listings in it.
+  ;;fixme; Take out item/server depending on applied filters? 
+  (let [listings @(subscribe [:listings])
+        listings-count @(subscribe [:listings-count])]
+    [:div.panel.panel-default
+     [:div.panel-heading 
+      "Showing results for " listings-count " listing(s)."]
+     [:table.table
+      [:thead
+       [:tr
+        [:th "Item"]
+        [:th "Price"]
+        [:th "Quantity"]
+        [:th "Price Per Unit"]
+        [:th "Server"]  
+        [:th "Contact"]]]
+      [:tbody
+       (map table-row listings)]]]))
 
 (defn create [] 
-  [:div.default-body.search
-   (item-select)
-   (-> @(subscribe [:item]))
-   (server-select)
-   (-> @(subscribe [:server]))
-   [:button.btn.btn-default 
-      {:type "button"
-       :on-click #(dispatch [:search-for-listings 1 2])}
-     "Search"]
-   (str @(subscribe [:listings]))])
+  [:div.search
+   [:div.default-body
+    [:div
+     (item-select)
+     (server-select)]
+    [:button.btn.btn-default 
+     {:type "button"
+      :on-click #(dispatch [:search-for-listings 1 2])} "Search"]
+    ]
+   (listings-table)])

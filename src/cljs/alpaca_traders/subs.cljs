@@ -30,3 +30,8 @@
   :listings 
   (fn [db _]
     (reaction (:listings @db))))
+
+(register-sub 
+  :listings-count
+  (fn [db _]
+    (-> @db :listings count reaction)))
