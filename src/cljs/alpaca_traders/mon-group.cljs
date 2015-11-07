@@ -84,12 +84,12 @@
   (let [total (to-total ppu-with-quantity)
         not-free? (-> total to-coppers pos?)]
     (if not-free?
-      [:div (map currency-view total)])))
+      [:div.currency-row (map currency-view total)])))
 
 (defn price-view [total]
   (let [not-free? (-> total to-coppers pos?)]
     (if not-free?
-      [:div (map currency-view total)]))  )
+      [:div.currency-row (map currency-view total)])))
 
 ;;
 ;; Le tests
