@@ -1,39 +1,38 @@
 (ns alpaca-traders.money-group
-  (:require [clojure.string :as string] 
-            [cljs.test :refer-macros [deftest is testing run-tests]]))
+  (:require [clojure.string :as string]))
 
 (def default-group {:platinum 0
                     :gold 0
                     :silver 0
                     :copper 0})
 
-(def currency-to-copper {:platinum 10000
-                         :gold 1000
-                         :silver 100
-                         :copper 1})
+(def currency->copper {:platinum 10000
+                       :gold 1000
+                       :silver 100
+                       :copper 1})
 
-(defn money-amount-to-coppz [money-entry]
+(defn money-amount->coppz [money-entry]
   (let [[currency amount] money-entry]
-    (* (currency currency-to-copper) amount)))
+    (* (currency currency->copper) amount)))
 
 (defn to-coppers [money-group]
-  (reduce + (map money-amount-to-coppz money-group)))
+  (reduce + (map money-amount->coppz money-group)))
 
-(defn- reduce-to-group [m]
+(defn reduce->group [m]
   (let [[current-key & keys-left] (:keys-left m)
         copper-left (:amount-left m)
-        conversion-rate (get currency-to-copper current-key)]
+        conversion-rate (get currency->copper current-key)]
     (if (nil? current-key)
       (dissoc m :keys-left :amount-left)
-      (reduce-to-group
+      (reduce->group
         (assoc m current-key (int (/ copper-left conversion-rate))
           :keys-left keys-left
           :amount-left (rem copper-left conversion-rate))))))
 
 (defn to-group [copper-amount]
   (let [k-order [:platinum :gold :silver :copper]]
-    (reduce-to-group {:amount-left copper-amount 
-                      :keys-left k-order})))
+    (reduce->group {:amount-left copper-amount 
+                    :keys-left k-order})))
 
 (defn to-total [ppu-with-quantity]
   (let [{ppu :price 
@@ -66,10 +65,11 @@
 ;; Dumb alpaca views
 (defn currency-view [currency-seq] 
   (let [[type value] currency-seq
-        should-render? (pos? value)]
+        should-render? (pos? value)
+        formatted-quantity (.toLocaleString value)]
     (if should-render?
       [:div.currency-row {:key currency-seq} 
-       [:span.currency-value value]
+       [:span.currency-value formatted-quantity]
        [:div.read-only {:class type}]
        ])))
 
@@ -90,32 +90,3 @@
   (let [not-free? (-> total to-coppers pos?)]
     (if not-free?
       [:div.currency-row (map currency-view total)])))
-
-;;
-;; Le tests
-;;
-(deftest test-to-total 
-  (let [money-group (assoc default-group :gold 4)
-        quantity 2
-        m {:price money-group :quantity quantity}
-        total (to-total m)
-        ]
-    (is (= (:gold total) 8))))
-
-(deftest test-to-ppu-rounds
-  (let [money-group (assoc default-group :copper 3)
-        quantity 2
-        state {:price money-group :quantity quantity}
-        ppu (to-ppu state)
-        ]
-    (is (= (:copper ppu) 1))))
-
-(deftest test-to-ppu 
-  (let [money-group (assoc default-group :gold 4)
-        quantity 2
-        state {:price money-group :quantity quantity}
-        ppu (to-ppu state)
-        ]
-    (is (= (:gold ppu) 2))))
-
-(run-tests)

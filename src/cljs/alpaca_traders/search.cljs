@@ -4,8 +4,7 @@
             [alpaca-traders.money-group :as money]))
 
 (defn item-to-option [item prefix]
-  "Create an HTML Option. If value is nil, option is disabled. 
-  Defaults to disabled options."
+  "Create an HTML Option."
   (let [{value :id 
          label :name} item]
     [:option {:value value
@@ -25,51 +24,47 @@
     [:select {:on-change #(dispatch [:select-server (.-target.value %)])
               :value @(subscribe [:server])} options]))
 
+(defn listings-filter []
+  [:div.default-body.search.filter
+   [item-select]
+   [server-select]
+   [:button.btn.btn-default 
+    {:type "button"
+     :on-click #(dispatch [:search-for-listings 1 2])} "Search"]
+   ])
+
+(defn panel-heading [row-count]
+  (let [plural (if (= 1 row-count) "" "s")]
+    [:div.panel.panel-heading 
+      "Showing " row-count " listing" plural "."]))
+
 (defn table-row [listing] 
-  (let [{contact-name :contact-name
-         item :item
-         price :price 
-         quantity :quantity
-         server :server} listing
-        ppu (if (= 1 quantity) "-" 
-              (money/ppu-view listing))]
-    [:tr {:key (str contact-name item price)}
+  (let [{:keys [item price quantity server]} listing
+        quantity (-> listing :quantity str .toLocaleString)
+        price (money/price-view price)]
+    [:tr {:key (str server item price)}
      [:td item]
-     [:td (money/price-view price)]
-     [:td quantity]
-     [:td ppu]
      [:td server]
-     [:td contact-name]
-     ]))
+     [:td.numeric quantity]
+     [:td.numeric price]]))
 
 (defn listings-table []
-  ;;Obviously a table that has listings in it.
-  ;;fixme; Take out item/server depending on applied filters? 
+  "fixme; Take out item/server depending on applied filters?" 
   (let [listings @(subscribe [:listings])
         listings-count @(subscribe [:listings-count])]
-    [:div.panel.panel-default
-     [:div.panel-heading 
-      "Showing results for " listings-count " listing(s)."]
+    [:div.search
+     [panel-heading listings-count]
      [:table.table
       [:thead
        [:tr
         [:th "Item"]
-        [:th "Price"]
-        [:th "Quantity"]
-        [:th "Price Per Unit"]
         [:th "Server"]  
-        [:th "Contact"]]]
+        [:th.numeric "Num"]
+        [:th.numeric "At Price"]]]
       [:tbody
        (map table-row listings)]]]))
 
 (defn create [] 
-  [:div.search
-   [:div.default-body
-    [:div
-     (item-select)
-     (server-select)]
-    [:button.btn.btn-default 
-     {:type "button"
-      :on-click #(dispatch [:search-for-listings 1 2])} "Search"]
-    ]
-   (listings-table)])
+   [:div
+    [listings-filter]
+    [listings-table]])

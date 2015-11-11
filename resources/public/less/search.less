@@ -1,24 +1,25 @@
-@table-color: #3C709A;
+@import "variables.less";
+
+@table-color: @background-color;
 
 .search {
-  .panel {
-    margin-top: .5em;
-  }
 
   table {
-    color: navajowhite;
+    color: @font-color;
+    background-color: @table-color;
+
+    .numeric {
+      text-align: right;
+    }
+
     thead {
       background-color: darken(@table-color, 10%);
     }
 
     tbody {
       background-color: @table-color;
-
+      
       tr {
-        &:nth-child(2n) {
-          background-color: lighten(@table-color, 15%); 
-        }
-
         &:hover {
           background-color: lighten(@table-color, 20%); 
         }
