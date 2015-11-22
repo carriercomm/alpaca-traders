@@ -29,7 +29,7 @@
    [item-select]
    [server-select]
    [:button.btn.btn-default 
-    {:type "button"
+    {:type "button" ;todo: remove button. is filter
      :on-click #(dispatch [:search-for-listings 1 2])} "Search"]
    ])
 
@@ -39,14 +39,15 @@
       "Showing " row-count " listing" plural "."]))
 
 (defn table-row [listing] 
-  (let [{:keys [item price quantity server]} listing
+  (let [{:keys [item price quantity server contact-name]} listing
         quantity (-> listing :quantity str .toLocaleString)
         price (money/price-view price)]
     [:tr {:key (str server item price)}
      [:td item]
      [:td server]
      [:td.numeric quantity]
-     [:td.numeric price]]))
+     [:td.numeric price]
+     [:td contact-name]]))
 
 (defn listings-table []
   "fixme; Take out item/server depending on applied filters?" 
@@ -60,10 +61,12 @@
         [:th "Item"]
         [:th "Server"]  
         [:th.numeric "Num"]
-        [:th.numeric "At Price"]]]
+        [:th.numeric "At Price"]
+        [:th "User"]]]
       [:tbody
        (map table-row listings)]]]))
 
+;todo: toggle ppu view. this will be shitty ux if someone only cares about ppu. 
 (defn create [] 
    [:div
     [listings-filter]

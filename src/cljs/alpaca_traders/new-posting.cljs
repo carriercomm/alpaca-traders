@@ -1,10 +1,11 @@
 (ns alpaca-traders.new-posting
   "Reagent component to create a new posting on alpaca-traders"
   (:require [clojure.string :refer [capitalize]]
+            [reagent.cookies :as cookie]
             [reagent.core :as r :refer [atom]]
             [alpaca-traders.money-group :as money]
             [cljs.test :refer-macros [deftest is testing run-tests]]
-            [ajax.core :refer [ajax-request]]))
+            [ajax.core :as ajax]))
 
 (def test-items [{:name "Choose an item" :id nil}
                  {:name "Bone chips" :id 1}
@@ -84,25 +85,26 @@
   (let [quantity (:quantity @state)
         plural (if (= 1 quantity) "" "s")]
     [:div.quantity
-     [:input {
-                           :type "number"
-                           :id "quantity"
-                           :min "1"
-                           :on-change #(swap! state assoc :quantity (int (.-target.value %)))
-                           :value (:quantity @state) }] 
+     [:input {:type "number"
+              :id "quantity"
+              :min "1"
+              :on-change #(swap! state assoc :quantity (int (.-target.value %)))
+              :value (:quantity @state) }] 
      [:label {:for "quantity"} "unit" plural]
      ]))
 
 (defn submit [state] 
-  (let [request {
+  (let [csrf (cookie/get :ring-session)
+        request {
                  :uri "/new-posting"
                  :method :post
+                 :handler #(-> % js/console.log)
                  :params (clj->js @state)
-                 :handler #(js/alert %)
-                 :format :json
-                 :response-format :json 
+                 :format (ajax/json-request-format)
+                 :response-format (ajax/json-response-format)
                  }
-        response (ajax-request request)]))
+        response (ajax/ajax-request request)]
+    ))
 
 (defn valid? [state]
   "Server and item must not be nil. 
