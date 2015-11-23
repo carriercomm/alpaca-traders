@@ -1,9 +1,10 @@
 (ns alpaca-traders.rethink-driver
   "See /misc-docs/rethink-schema.pdf for more deetz on the schema."
-  (:require [rethinkdb.query :as r]))
+  (:require [rethinkdb.query :as r])
+  (:require [cheshire.core :refer [parse-string]]))
 
 (defonce DB_ADDR "127.0.0.1")
-(defonce DB_NAME "alpaca-trade")
+(defonce DB_NAME "alpaca_trade_test1")
 (defonce DB_PORT 28015)
 
 (defn get-conn []
@@ -27,7 +28,8 @@
       (-> (r/db db)
           (r/table-create table-name)
           (r/run conn))
-      )))
+      )
+    ))
 
 (defn setup-db []
   "Create the DB and all tables for our app."
@@ -40,20 +42,14 @@
       (make-table "items")
       (make-table "users")
       (make-table "listings")
-      ))
-  
-  ;fixme: don't put dummy values into db like this
-  
-  ; (-> (r/table "items")
-  ;     (r/insert [
-  ;                {:name "Bone chips"
-  ;                 :external_id 1},
-  ;                {:name "Duck chips"
-  ;                 :external_id 2}
-  ;                ])
-  ;     (r/run conn)
-  ;     )
-  )
+      )
+    
+    ;Init the DB with the items listed in the json file. 
+    (-> (r/table "items")
+        (r/insert (-> (slurp "items.json")
+                      (parse-string true)))
+        (r/run conn))
+    ))
 
 ;(setup-db)
   

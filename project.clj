@@ -5,6 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :dependencies [[org.clojure/clojure "1.7.0"]
+                 [cheshire "5.5.0"]
                  [cljs-ajax "0.5.0"]
                  [ring-server "0.4.0"]
                  [reagent "0.5.1"]
@@ -40,7 +41,7 @@
 
   :source-paths ["src/clj" "src/cljc"]
   
-   :less {:source-paths ["resources/public/less"]
+  :less {:source-paths ["resources/public/less"]
          :target-path "resources/public/css"}
   
   :minify-assets
