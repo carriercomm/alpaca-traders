@@ -51,5 +51,13 @@
         (r/run conn))
     ))
 
+
+; (defn get-items [] 
+;   (with-open [conn (driver/get-conn)]
+;     (-> (r/db driver/DB_NAME)
+;         (r/table "items")
+;         (r/run conn))
+;   ))
+
 ;(setup-db)
   

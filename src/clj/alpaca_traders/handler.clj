@@ -1,5 +1,7 @@
 (ns alpaca-traders.handler
-  (:require [compojure.core :refer [GET POST defroutes]]
+  (:require [alpaca-traders.items :as items]
+            [cheshire.core :refer [generate-string]]
+            [compojure.core :refer [GET POST defroutes]]
             [compojure.route :refer [not-found resources]]
             [hiccup.core :refer [html]]
             [hiccup.page :refer [include-js include-css]]
@@ -7,8 +9,7 @@
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
             [environ.core :refer [env]]
-            )
-  )
+            ))
 
 (def home-page
   (html
@@ -30,8 +31,14 @@
   (print doc)
   {:status "ok"})
 
+(defn json-response [data & [status]]
+  {:status (or status 200)
+   :headers {"Content-Type" "application/json"}
+   :body (generate-string data)})
+
 (defroutes routes
   (GET "/" [] home-page)
+  (GET "/items" [] (json-response (items/get-items)))
   (GET "/new-posting" [] "hi")
   (POST "/new-posting" {:keys [body-params]}
         (save-document body-params))
@@ -42,4 +49,6 @@
   (let [site-prefs (assoc-in site-defaults [:security :anti-forgery] false)
         handler (wrap-defaults #'routes site-prefs)]
     (print site-prefs)
-    (if (env :dev) (-> handler wrap-exceptions wrap-reload) handler)))
+    (if (env :dev) 
+      (-> handler wrap-exceptions wrap-reload) 
+      handler)))
