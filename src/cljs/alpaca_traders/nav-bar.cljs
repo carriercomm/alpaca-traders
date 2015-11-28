@@ -3,7 +3,7 @@
 
 (def links [["[Alpaca Traders]" "#"]
             ["Buy" "#"]
-            ["Sell" "#post/create"]
+            ["Sell" "#listings/create"]
             ["About" "#about"]])
 
 (defn to-nav-bar-link [[title link]]

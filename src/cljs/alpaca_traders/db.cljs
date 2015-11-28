@@ -2,9 +2,7 @@
   (:require 
     [alpaca-traders.money-group :as money]))
 
-(def test-items [{:name "Choose an item" :id nil}
-                 {:name "Bone chips" :id 1}
-                 {:name "Duck chips" :id 2}])
+(def initial-items [{:name "Choose an item" :id nil}])
 
 (def test-servers [{:name "Choose a server" :id nil}
                    {:name "Mal'Ganis" :id 1}
@@ -39,7 +37,7 @@
   test-listings)
 
 (def initial-state 
-  {:items test-items 
+  {:items initial-items 
    :listings (sorted-map) ;;todo sort by field
    :selected-item nil 
    :servers test-servers

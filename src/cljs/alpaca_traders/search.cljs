@@ -68,6 +68,7 @@
 
 ;todo: toggle ppu view. this will be shitty ux if someone only cares about ppu. 
 (defn create [] 
+    (dispatch [:fetch-items])
    [:div
     [listings-filter]
     [listings-table]])

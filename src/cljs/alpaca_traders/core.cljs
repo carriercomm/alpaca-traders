@@ -23,15 +23,18 @@
 ;; Routes
 (secretary/set-config! :prefix "#")
 
-(secretary/defroute "/" [selected-item] 
-                    (dispatch [:search-for-listings])
+(secretary/defroute "/" []  
+                    "Redirect to search listings endpoint." 
                     (session/put! :current-page #'search/create))
+
+(secretary/defroute "/listings" []
+                    (session/put! :current-page #'search/create))
+
+(secretary/defroute "/listings/create" []
+                    (session/put! :current-page #'post/create))
 
 (secretary/defroute "/about" []
                     (session/put! :current-page #'about/view))
-
-(secretary/defroute "/post/create" []
-                    (session/put! :current-page #'post/create))
 
 ;; -------------------------
 ;; History
