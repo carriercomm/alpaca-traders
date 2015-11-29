@@ -8,7 +8,6 @@
 (register-sub 
   :items
   (fn [db _]
-    (print db)
     (reaction (:items @db))))
 
 (register-sub 

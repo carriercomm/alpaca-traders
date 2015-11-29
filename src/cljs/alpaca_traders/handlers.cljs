@@ -5,12 +5,12 @@
     [ajax.core :as ajax]))
 
 (def json-response-format 
+  "Define the response format for our GET calls. The only difference is that we want to keywordize every single one of the responses."
   (ajax/json-response-format {:keywords? true}))
 
 ;; Register the handlerz
 
 (register-handler 
-  ;; TODO: Possibly pull in some user settings from session
   :initialize-db
   (fn [_ _] db/initial-state))
 
