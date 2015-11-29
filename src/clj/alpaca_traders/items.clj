@@ -8,4 +8,4 @@
     (-> (r/db driver/DB_NAME)
         (r/table "items")
         (r/run conn)
-        ))) 
+        )))

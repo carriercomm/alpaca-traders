@@ -4,6 +4,9 @@
     [re-frame.core :refer [dispatch path register-handler trim-v]]
     [ajax.core :as ajax]))
 
+(def json-response-format 
+  (ajax/json-response-format {:keywords? true}))
+
 ;; Register the handlerz
 
 (register-handler 
@@ -14,15 +17,13 @@
 (register-handler
   :got-items [(path :items) trim-v]
   (fn [old-items [items]]
-    (print old-items)
-    (print items) 
-    items
-    ))
+    (concat db/initial-items items)))
 
 (register-handler
   :fetch-items
   (fn [db _] 
-    (ajax/GET "/items" {:handler #(dispatch [:got-items %])})
+    (ajax/GET "/items" {:handler #(dispatch [:got-items %])
+                        :response-format json-response-format})
     db))
 
 (register-handler 
