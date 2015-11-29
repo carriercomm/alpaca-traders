@@ -19,45 +19,61 @@
       (r/run (r/db-create db) conn))
     ))
 
-(defn create-table [conn db table-name] 
- "create table if eists"
-  (println "Creating table: " db ":" table-name)
-  (let [table-exists? (some #{table-name} (r/run (r/table-list) conn))]
-    (if table-exists?
-      (println "No need to create table. Exists.")    
-      (-> (r/db db)
-          (r/table-create table-name)
-          (r/run conn))
-      )
+(defn table-exists? [conn db table-name] 
+   (some #{table-name} (r/run (r/table-list) conn)))
+
+(defn drop-table [conn db table-name] 
+  "create table if eists"
+  (println "Dropping table: " db ":" table-name)
+  (if (table-exists? conn db table-name)
+    (-> (r/db db)
+        (r/table-drop table-name)
+        (r/run conn))
+    (println "No need to drop table. Doesnt exist.")
     ))
+
+(defn create-table [conn db table-name] 
+  "create table if eists"
+  (println "Creating table: " db ":" table-name)
+  (if (table-exists? conn db table-name)
+    (println "No need to create table. Exists.")
+    (-> (r/db db)
+        (r/table-create table-name)
+        (r/run conn))
+    ))
+
+(defn load-documents [conn db table-name] 
+  (println "Loading documents for table " table-name)
+  (-> (r/table table-name)
+      (r/insert (-> (str "json/" table-name ".json")
+                    (slurp)
+                    (parse-string true)))
+      (r/run conn)))
 
 (defn setup-db []
   "Create the DB and all tables for our app."
   (with-open [conn (get-conn)]
+    
     (create-db (get-conn) DB_NAME)
+    
+    (let [drop-table #(drop-table conn DB_NAME %)]
+      (drop-table "items")
+      (drop-table "servers"))
     
     ;Yes.. I tried a map. It was just chugging.. Parallel map by default 
     ;perhaps causing lock up on db connection?
     (let [make-table #(create-table conn DB_NAME %)]
-      (make-table "items")
       (make-table "users")
       (make-table "listings")
-      )
+      (make-table "items")
+      (make-table "servers"))
     
     ;Init the DB with the items listed in the json file. 
-    (-> (r/table "items")
-        (r/insert (-> (slurp "items.json")
-                      (parse-string true)))
-        (r/run conn))
+    (let [load-docs #(load-documents conn DB_NAME %)]
+      (load-docs "items")
+      (load-docs "servers")
+      )
     ))
-
-
-; (defn get-items [] 
-;   (with-open [conn (driver/get-conn)]
-;     (-> (r/db driver/DB_NAME)
-;         (r/table "items")
-;         (r/run conn))
-;   ))
-
+    
 ;(setup-db)
   
