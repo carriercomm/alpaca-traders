@@ -1,5 +1,8 @@
 (ns alpaca-traders.handler
   (:require [alpaca-traders.items :as items]
+            [alpaca-traders.servers :as servers]
+            [alpaca-traders.listings 
+             :as listings]
             [cheshire.core :refer [generate-string]]
             [compojure.core :refer [GET POST defroutes]]
             [compojure.route :refer [not-found resources]]
@@ -27,10 +30,6 @@
         " in order to start the compiler"]]
       (include-js "js/app.js")]]))
 
-(defn save-document [doc]
-  (print doc)
-  {:status "ok"})
-
 (defn json-response [data & [status]]
   {:status (or status 200)
    :headers {"Content-Type" "application/json"}
@@ -39,16 +38,15 @@
 (defroutes routes
   (GET "/" [] home-page)
   (GET "/items" [] (json-response (items/get-items)))
-  (GET "/new-posting" [] "hi")
-  (POST "/new-posting" {:keys [body-params]}
-        (save-document body-params))
+  (GET "/servers" [] (json-response (servers/get-servers)))
+  (GET "/listings" [query-params] 
+       (json-response (listings/query query-params)))
   (resources "/")
   (not-found "Not Found"))
 
 (def app
   (let [site-prefs (assoc-in site-defaults [:security :anti-forgery] false)
         handler (wrap-defaults #'routes site-prefs)]
-    (print site-prefs)
     (if (env :dev) 
       (-> handler wrap-exceptions wrap-reload) 
       handler)))

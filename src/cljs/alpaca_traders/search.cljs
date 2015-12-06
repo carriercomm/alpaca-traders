@@ -30,7 +30,7 @@
    [server-select]
    [:button.btn.btn-default 
     {:type "button" ;todo: remove button. is filter
-     :on-click #(dispatch [:search-for-listings 1 2])} "Search"]
+     :on-click #(dispatch [:search-for-listings])} "Search"]
    ])
 
 (defn panel-heading [row-count]
@@ -45,9 +45,9 @@
     [:tr {:key (str server item price)}
      [:td item]
      [:td server]
+     [:td contact-name]
      [:td.numeric quantity]
-     [:td.numeric price]
-     [:td contact-name]]))
+     [:td.numeric price]]))
 
 (defn listings-table []
   "fixme; Take out item/server depending on applied filters?" 
@@ -60,15 +60,14 @@
        [:tr
         [:th "Item"]
         [:th "Server"]  
+        [:th "User"]
         [:th.numeric "Num"]
-        [:th.numeric "At Price"]
-        [:th "User"]]]
+        [:th.numeric "At Price"]]]
       [:tbody
        (map table-row listings)]]]))
 
 ;todo: toggle ppu view. this will be shitty ux if someone only cares about ppu. 
 (defn create [] 
-  (dispatch [:fetch-items])
   [:div
    [listings-filter]
    [listings-table]])
